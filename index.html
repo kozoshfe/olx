@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laptop Generator</title>
+<style>
+:root{
+  --bg:#0b1020;
+  --panel:#121a31;
+  --panel-2:#182241;
+  --text:#eef2ff;
+  --muted:#9aa7c7;
+  --line:rgba(255,255,255,.08);
+  --accent:#f5c542;
+  --accent-2:#dca90b;
+  --success:#22c55e;
+  --input:#0e1630;
+  --shadow:0 18px 50px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Inter,Arial,sans-serif;background:
+radial-gradient(circle at top, rgba(245,197,66,.07), transparent 25%),
+linear-gradient(180deg,#09101f,#0b1020);color:var(--text)}
+body{padding:24px}
+.container{max-width:1100px;margin:auto}
+.header{
+  margin-bottom:18px;
+  padding:24px;
+  border:1px solid var(--line);
+  border-radius:24px;
+  background:linear-gradient(180deg,rgba(24,34,65,.95),rgba(18,26,49,.95));
+  box-shadow:var(--shadow);
+}
+.header h1{margin:0 0 8px;font-size:34px;letter-spacing:-.03em}
+.header p{margin:0;color:var(--muted);font-size:15px}
+.layout{
+  display:grid;
+  grid-template-columns: 420px 1fr;
+  gap:18px;
+}
+.card{
+  background:linear-gradient(180deg,rgba(24,34,65,.94),rgba(18,26,49,.94));
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadow);
+}
+.form-card{padding:20px}
+.output-card{padding:20px;display:flex;flex-direction:column}
+.section-title{
+  margin:0 0 14px;
+  font-size:18px;
+  font-weight:800;
+  letter-spacing:-.02em;
+}
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+label{
+  color:var(--muted);
+  font-size:13px;
+  font-weight:700;
+}
+select,input,button,textarea{
+  font:inherit;
+}
+select,input,textarea{
+  width:100%;
+  padding:13px 14px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background:var(--input);
+  color:var(--text);
+  outline:none;
+}
+select:focus,input:focus,textarea:focus{
+  border-color:rgba(245,197,66,.55);
+  box-shadow:0 0 0 3px rgba(245,197,66,.12);
+}
+textarea{
+  min-height:410px;
+  resize:vertical;
+  line-height:1.55;
+}
+.btn{
+  border:none;
+  border-radius:14px;
+  padding:13px 16px;
+  cursor:pointer;
+  font-weight:800;
+  transition:.18s ease;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{
+  background:linear-gradient(180deg,var(--accent),var(--accent-2));
+  color:#1a1302;
+}
+.btn-secondary{
+  background:#213054;
+  color:var(--text);
+  border:1px solid var(--line);
+}
+.btn-success{
+  background:linear-gradient(180deg,#25cf66,#169a49);
+  color:#fff;
+}
+.actions{
+  display:grid;
+  gap:10px;
+  margin-top:14px;
+}
+.output-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.output-top h2{
+  margin:0;
+  font-size:20px;
+}
+.copy-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:10px;
+}
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:#1c2947;
+  color:var(--muted);
+  font-size:12px;
+  border:1px solid var(--line);
+}
+.footer-note{
+  margin-top:10px;
+  color:var(--muted);
+  font-size:12px;
+}
+.toast{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  background:#152340;
+  color:#fff;
+  border:1px solid var(--line);
+  padding:12px 14px;
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  opacity:0;
+  transform:translateY(10px);
+  pointer-events:none;
+  transition:.2s ease;
+}
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+@media (max-width: 980px){
+  .layout{grid-template-columns:1fr}
+}
+@media (max-width: 640px){
+  body{padding:14px}
+  .header{padding:18px}
+  .header h1{font-size:28px}
+  .form-card,.output-card{padding:16px}
+  .grid{grid-template-columns:1fr}
+  .copy-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Генератор опису ноутбуків</h1>
+    <p>Охайний генератор заголовка та опису для оголошень. Швидко, чисто і зручно для телефону.</p>
+  </div>
+
+  <div class="layout">
+    <div class="card form-card">
+      <h2 class="section-title">Параметри ноутбука</h2>
+
+      <div class="grid">
+        <div class="field">
+          <label for="type">Тип</label>
+          <select id="type">
+            <option>Ноутбук</option>
+            <option>Потужний</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="model">Модель</label>
+          <select id="model">
+            <option>HP EliteBook 850 G7</option>
+            <option>HP Zbook G4</option>
+            <option>HP Zbook G5</option>
+            <option>HP Zbook G6</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="cpu">Процесор</label>
+          <select id="cpu">
+            <option>i5-10210U</option>
+            <option>i5-10310U</option>
+            <option>i7-8750H</option>
+            <option>i7-9850H</option>
+            <option>i7-7820HQ</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="ram">Оперативна памʼять</label>
+          <select id="ram">
+            <option>16 Гб DDR4</option>
+            <option>32 Гб DDR4</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="ssd">Накопичувач</label>
+          <select id="ssd">
+            <option>256 SSD</option>
+            <option>512 SSD</option>
+            <option>1024 SSD</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="gpu">Відеокарта</label>
+          <select id="gpu">
+            <option>HD Graphics 620</option>
+            <option>NVIDIA Quadro M2200 4GB</option>
+            <option>Nvidia Quadro P2000 4GB</option>
+            <option>Nvidia Quadro P1000 4GB</option>
+            <option>Nvidia Quadro T2000 4GB</option>
+            <option>Nvidia Quadro T1000 4GB</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="code">Код товару</label>
+          <input id="code" placeholder="Наприклад: 200">
+        </div>
+
+        <div class="field">
+          <label for="battery">Батарея, %</label>
+          <input id="battery" placeholder="Наприклад: 86">
+        </div>
+
+        <div class="field full">
+          <label for="state">Стан</label>
+          <select id="state">
+            <option>9/10</option>
+            <option>8/10</option>
+            <option>Як новий</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" onclick="generate()">Згенерувати</button>
+      </div>
+
+      <div class="footer-note">
+        Порада: спочатку заповни код і батарею — так результат одразу буде готовий для копіювання.
+      </div>
+    </div>
+
+    <div class="card output-card">
+      <div class="output-top">
+        <h2>Результат</h2>
+        <div class="badge">⚡ Готово для OLX / Telegram</div>
+      </div>
+
+      <div class="field">
+        <label for="titleField">Заголовок</label>
+        <div class="copy-row">
+          <input id="titleField" readonly placeholder="Тут буде заголовок">
+          <button class="btn btn-secondary" onclick="copyTitle()">Копіювати</button>
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:14px; flex:1;">
+        <label for="result">Опис</label>
+        <textarea id="result" placeholder="Тут буде згенерований опис"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-success" onclick="copyText()">Копіювати опис</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast">Скопійовано</div>
+
+<script>
+function escapeHtml(str){
+  return String(str ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function showToast(text){
+  const toast = document.getElementById('toast');
+  toast.textContent = text;
+  toast.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 1800);
+}
+
+function generate(){
+  const type = document.getElementById('type').value;
+  const model = document.getElementById('model').value;
+  const cpu = document.getElementById('cpu').value;
+  const ram = document.getElementById('ram').value;
+  const ssd = document.getElementById('ssd').value;
+  const gpuRaw = document.getElementById('gpu').value;
+  const gpu = gpuRaw.includes("Quadro")
+    ? `<strong>${gpuRaw}</strong>`
+    : gpuRaw;
+  const code = escapeHtml(document.getElementById('code').value.trim());
+  const state = document.getElementById('state').value;
+  const battery = escapeHtml(document.getElementById('battery').value.trim());
+
+  const title = `${type} ${model} | ${cpu} | ${ram} | ${ssd}`;
+  document.getElementById('titleField').value = title;
+
+  let descriptionText = "";
+
+  if(model.includes("EliteBook")){
+    descriptionText = `з процесором ${cpu}, ${ram}, та накопичувачем на ${ssd}. Відмінний вибір для роботи та навчання.`;
+  }
+
+  if(model.includes("Zbook")){
+    let cores = "";
+    if(cpu.includes("7820")) cores = "4 ядер 8 потоків";
+    if(cpu.includes("8750") || cpu.includes("9850")) cores = "6 ядер 12 потоків";
+
+    descriptionText = `мобільна робоча станція для професійних задач. Ноутбук сформований на платформі, що орієнтована на виконання професійних прикладних задач, і комплектується процесором ${cpu} <strong>${cores}</strong>, що визначає клас пристрою як мобільну робочу станцію. Система постачається з ${ram}, що дозволяє обробляти великі обсяги даних.`;
+  }
+
+  const text = `
+<strong>Код товару : ${code}</strong>
+
+<strong>${type} ${model}</strong> - ${descriptionText}
+
+<strong>Характеристики:</strong>
+1. Екран - 15.6, FHD (1920 x 1080)
+2. Процесор - ${cpu}
+3. Оперативка - ${ram}
+4. Пам'ять - ${ssd}
+5. Відеокарта - ${gpu}
+6. Клавіатура з підсвіткою
+7. Всі характеристики на останньому фото
+8. Сканер відбитка пальців
+9. USB порт для зарядки телефонів та планшетів
+
+<strong>Додатково:</strong>
+• Комплектація: Ноутбук, оригінальна зарядка
+• Зовнішній вид - <strong>${state}</strong>
+• Батарея - <strong>${battery}%</strong>
+• Зроблена професійна чистка, замінено термопасту
+• Установлена Windows 10 Pro, все активовано
+
+<strong>Доставка:</strong>
+• Можливий торг
+• Відправка в інші міста по ОЛХ доставці
+• Якщо цікавлять якісь деталі — телефонуйте
+
+<strong>Контакти:</strong>
+• Пишіть або телефонуйте — завжди на зв'язку
+• Viber / Telegram — доступні на цьому номері
+• Телеграм канал з ноутбуками - <strong>t.me/NouutOk</strong>
+`;
+  document.getElementById('result').value = text.trim();
+  showToast('Опис згенеровано');
+}
+
+async function copyTitle(){
+  const value = document.getElementById('titleField').value.trim();
+  if(!value){
+    showToast('Спочатку згенеруй заголовок');
+    return;
+  }
+  try{
+    await navigator.clipboard.writeText(value);
+    showToast('Заголовок скопійовано');
+  }catch(e){
+    showToast('Не вдалося скопіювати');
+  }
+}
+
+async function copyText(){
+  const value = document.getElementById('result').value.trim();
+  if(!value){
+    showToast('Спочатку згенеруй опис');
+    return;
+  }
+  try{
+    await navigator.clipboard.writeText(value);
+    showToast('Опис скопійовано');
+  }catch(e){
+    showToast('Не вдалося скопіювати');
+  }
+}
+
+generate();
+</script>
+</body>
+</html>
