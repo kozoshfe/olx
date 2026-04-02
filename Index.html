@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Laptop Generator</title>
+<style>
+body{font-family:Arial;background:#1e1e2f;color:#fff;padding:20px}
+.container{max-width:900px;margin:auto}
+select,input,button,textarea{width:100%;margin:6px 0;padding:10px;border-radius:6px;border:none}
+button{background:gold;font-weight:bold;cursor:pointer}
+textarea{height:320px}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>Генератор опису</h2>
+
+<select id="type">
+<option>Ноутбук</option>
+<option>Потужний</option>
+</select>
+
+<select id="model">
+<option>HP EliteBook 850 G7</option>
+<option>HP Zbook G4</option>
+<option>HP Zbook G5</option>
+<option>HP Zbook G6</option>
+</select>
+
+<select id="cpu">
+<option>i5-10210U</option>
+<option>i5-10310U</option>
+<option>i7-8750H</option>
+<option>i7-9850H</option>
+<option>i7-7820HQ</option>
+</select>
+
+<select id="ram">
+<option>16 Гб DDR4</option>
+<option>32 Гб DDR4</option>
+</select>
+
+<select id="ssd">
+<option>256 SSD</option>
+<option>512 SSD</option>
+<option>1024 SSD</option>
+</select>
+
+<!-- 🔥 НОВИЙ ВИБІР ВІДЕОКАРТИ -->
+<select id="gpu">
+<option>HD Graphics 620</option>
+<option><strong>NVIDIA Quadro M2200 на 4 Гігабайта</strong></option>
+<option><strong>Nvidia Quadro P2000 4Gb</strong></option>
+<option><strong>Nvidia Quadro P1000 4Gb</strong></option>
+<option><strong>Nvidia Quadro T2000 4Gb</strong></option>
+<option><strong>Nvidia Quadro T1000 4Gb</strong></option>
+</select>
+
+<input id="code" placeholder="Код товару">
+<input id="battery" placeholder="Батарея %">
+
+<select id="state">
+<option>9/10</option>
+<option>8/10</option>
+<option>Як новий</option>
+</select>
+
+<h3>Заголовок</h3>
+<input id="titleField" readonly>
+<button onclick="copyTitle()">Копіювати заголовок</button>
+
+<button onclick="generate()">Згенерувати</button>
+
+<h3>Опис</h3>
+<textarea id="result"></textarea>
+<button onclick="copyText()">Копіювати опис</button>
+
+</div>
+
+<script>
+function generate(){
+let type=document.getElementById('type').value;
+let model=document.getElementById('model').value;
+let cpu=document.getElementById('cpu').value;
+let ram=document.getElementById('ram').value;
+let ssd=document.getElementById('ssd').value;
+let gpuRaw = document.getElementById('gpu').value;
+let gpu = gpuRaw.includes("Quadro") 
+  ? `<strong>${gpuRaw}</strong>` 
+  : gpuRaw;
+let code=document.getElementById('code').value;
+let state=document.getElementById('state').value;
+let battery=document.getElementById('battery').value;
+
+let title=`${type} ${model} | ${cpu} | ${ram} x ${ssd}`;
+document.getElementById('titleField').value=title;
+
+let descriptionText="";
+
+if(model.includes("EliteBook")){
+descriptionText=`з процесором ${cpu}, ${ram}, та накопичувачем на ${ssd}. Відмінний вибір для роботи та навчання.`;
+}
+
+if(model.includes("Zbook")){
+let cores="";
+if(cpu.includes("7820")) cores="4 ядер 8 потоків";
+if(cpu.includes("8750")||cpu.includes("9850")) cores="6 ядер 12 потоків";
+
+descriptionText=`мобільна робоча станція для професійних задач. Ноутбук сформований на платформі, що орієнтована на виконання професійних прикладних задач, і комплектується процесором ${cpu} <strong>${cores}</strong>, що визначає клас пристрою як мобільну робочу станцію. Система постачається з ${ram}, що дозволяє обробляти великі обсяги даних.`;
+}
+
+let text=`
+<strong>Код товару : ${code}</strong>
+
+<strong>${type} ${model}</strong> - ${descriptionText}
+
+<strong>Характеристики: </strong>
+1. Екран - 15.6 , FHD (1920 x 1080 )
+2. Процесор ${cpu}
+3. Оперативка - ${ram}
+4. Пам'ять - ${ssd}
+5. Відеокарта - ${gpu}
+6. Клавіатура з підсвіткою
+7. Всі характеристики на останньому фото
+8. Сканер відбитка пальців
+9. USB SAC ноутбук можна використовувати для зарядки телефонів, планшетів.
+
+<strong>Додатково: </strong>
+• Комплектація : Ноутбук, Оригінальна зарядка
+• Зовнішній вид - <strong>${state}</strong>
+• Батарея - <strong>${battery}%</strong>
+• Зроблена професійна чистка, замінено термопасту
+• Установлена Windows 10 Pro все активовано.
+
+<strong>Доставка: </strong>
+- Можливий торг
+- Відправка в інші міста по ОЛХ доставці
+- Якшо цікавлять якісь деталі телефонуйте
+
+<strong>Контакти: </strong>
+• Пишіть або телефонуйте - завжди на звязку!
+• Viber / Telegram - доступні на доному номері
+• Телеграм канал з ноутбуками - <strong>t.me/NouutOk</strong>
+`;
+
+document.getElementById('result').value=text.trim();
+}
+
+function copyTitle(){
+navigator.clipboard.writeText(document.getElementById('titleField').value);
+}
+
+function copyText(){
+navigator.clipboard.writeText(document.getElementById('result').value);
+}
+</script>
+
+</body>
+</html>
