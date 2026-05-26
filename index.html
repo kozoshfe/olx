@@ -507,7 +507,8 @@ function generateOlx(){
   const state = document.getElementById('olx_state').value;
   const battery = document.getElementById('olx_battery').value.trim();
 
-  const title = `${type} ${model} | ${cpu} | ${ram} | ${ssd}`;
+  const titleExtra = type === "Потужний" ? "Ноутбук для монтажу" : "Ноутбук для роботи";
+  const title = `${type} ${model} | ${cpu} | ${ram} | ${ssd} | ${titleExtra}`;
   document.getElementById('olx_titleField').value = title;
 
   let descriptionText = "";
