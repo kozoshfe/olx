@@ -226,11 +226,19 @@ textarea{
           </div>
           <div class="field">
             <label for="olx_model">Модель</label>
-            <select id="olx_model"><option>HP EliteBook 850 G7</option><option>HP Zbook G4</option><option>HP Zbook G5</option><option>HP Zbook G6</option></select>
+            <select id="olx_model"><option>HP EliteBook 850 G7</option><option>HP Zbook G4</option><option>HP Zbook G5</option><option>HP Zbook G6</option><option>Інше</option></select>
+          </div>
+          <div class="field full" id="olx_model_custom_wrap" style="display:none;">
+            <label for="olx_model_custom">Своя модель</label>
+            <input id="olx_model_custom" placeholder="Введіть назву моделі">
           </div>
           <div class="field">
             <label for="olx_cpu">Процесор</label>
-            <select id="olx_cpu"><option>i5-10210U</option><option>i5-10310U</option><option>i7-8750H</option><option>i7-9850H</option><option>i7-7820HQ</option></select>
+            <select id="olx_cpu"><option>i5-10210U</option><option>i5-10310U</option><option>i7-8750H</option><option>i7-9850H</option><option>i7-7820HQ</option><option>Інше</option></select>
+          </div>
+          <div class="field full" id="olx_cpu_custom_wrap" style="display:none;">
+            <label for="olx_cpu_custom">Свій процесор</label>
+            <input id="olx_cpu_custom" placeholder="Введіть назву процесора">
           </div>
           <div class="field">
             <label for="olx_ram">Оперативна памʼять</label>
@@ -242,7 +250,11 @@ textarea{
           </div>
           <div class="field">
             <label for="olx_gpu">Відеокарта</label>
-            <select id="olx_gpu"><option>HD Graphics 620</option><option>NVIDIA Quadro M2200 4GB</option><option>Nvidia Quadro P2000 4GB</option><option>Nvidia Quadro P1000 4GB</option><option>Nvidia Quadro T2000 4GB</option><option>Nvidia Quadro T1000 4GB</option></select>
+            <select id="olx_gpu"><option>HD Graphics 620</option><option>NVIDIA Quadro M2200 4GB</option><option>Nvidia Quadro P2000 4GB</option><option>Nvidia Quadro P1000 4GB</option><option>Nvidia Quadro T2000 4GB</option><option>Nvidia Quadro T1000 4GB</option><option>Інше</option></select>
+          </div>
+          <div class="field full" id="olx_gpu_custom_wrap" style="display:none;">
+            <label for="olx_gpu_custom">Своя відеокарта</label>
+            <input id="olx_gpu_custom" placeholder="Введіть назву відеокарти">
           </div>
           <div class="field">
             <label for="olx_code">Код товару</label>
@@ -259,6 +271,10 @@ textarea{
           <div class="field full">
             <label for="olx_state">Стан</label>
             <select id="olx_state"><option>9/10</option><option>8/10</option><option>Як новий</option></select>
+          </div>
+          <div class="field full" style="flex-direction:row;align-items:center;gap:10px;">
+            <input type="checkbox" id="olx_backlight" checked style="width:auto;padding:0;">
+            <label for="olx_backlight" style="margin:0;">Підсвітка (клавіатура з підсвіткою)</label>
           </div>
         </div>
         <div class="actions">
@@ -297,7 +313,11 @@ textarea{
         <div class="grid">
           <div class="field full">
             <label for="tg_model">💻 Модель</label>
-            <select id="tg_model"><option>HP EliteBook 850 G7</option><option selected>HP Zbook 15 G4</option><option>HP Zbook 15 G5</option><option>HP Zbook 15 G6</option></select>
+            <select id="tg_model"><option>HP EliteBook 850 G7</option><option selected>HP Zbook 15 G4</option><option>HP Zbook 15 G5</option><option>HP Zbook 15 G6</option><option>Інше</option></select>
+          </div>
+          <div class="field full" id="tg_model_custom_wrap" style="display:none;">
+            <label for="tg_model_custom">Своя модель</label>
+            <input id="tg_model_custom" placeholder="Введіть назву моделі">
           </div>
           <div class="field">
             <label for="tg_number">🔢 Номер ноутбука</label>
@@ -305,7 +325,11 @@ textarea{
           </div>
           <div class="field">
             <label for="tg_cpu">🛠 Процесор</label>
-            <select id="tg_cpu"><option>i5-10210U</option><option>i5-10310U</option><option selected>i7-8750H</option><option>i7-9850H</option><option>i7-7820HQ</option></select>
+            <select id="tg_cpu"><option>i5-10210U</option><option>i5-10310U</option><option selected>i7-8750H</option><option>i7-9850H</option><option>i7-7820HQ</option><option>Інше</option></select>
+          </div>
+          <div class="field full" id="tg_cpu_custom_wrap" style="display:none;">
+            <label for="tg_cpu_custom">Свій процесор</label>
+            <input id="tg_cpu_custom" placeholder="Введіть назву процесора">
           </div>
           <div class="field">
             <label for="tg_ram">🧠 ОЗП</label>
@@ -317,7 +341,11 @@ textarea{
           </div>
           <div class="field">
             <label for="tg_gpu">🎮 Відеокарта</label>
-            <select id="tg_gpu"><option>HD Graphics 620</option><option>NVIDIA Quadro M2200 4GB</option><option>Nvidia Quadro P2000 4GB</option><option>Nvidia Quadro P1000 4GB</option><option>Nvidia Quadro T2000 4GB</option><option>Nvidia Quadro T1000 4GB</option></select>
+            <select id="tg_gpu"><option>HD Graphics 620</option><option>NVIDIA Quadro M2200 4GB</option><option>Nvidia Quadro P2000 4GB</option><option>Nvidia Quadro P1000 4GB</option><option>Nvidia Quadro T2000 4GB</option><option>Nvidia Quadro T1000 4GB</option><option>Інше</option></select>
+          </div>
+          <div class="field full" id="tg_gpu_custom_wrap" style="display:none;">
+            <label for="tg_gpu_custom">Своя відеокарта</label>
+            <input id="tg_gpu_custom" placeholder="Введіть назву відеокарти">
           </div>
           <div class="field">
             <label for="tg_battery">🔋 Стан батареї (%)</label>
@@ -359,6 +387,13 @@ textarea{
 
 <script>
 
+function toggleCustomField(prefix, field){
+  const select = document.getElementById(prefix + '_' + field);
+  const wrap = document.getElementById(prefix + '_' + field + '_custom_wrap');
+  if(!select || !wrap) return;
+  wrap.style.display = select.value === 'Інше' ? '' : 'none';
+}
+
 function syncSharedFields(changedId){
   const pairs = {
     olx_model: 'tg_model',
@@ -366,10 +401,16 @@ function syncSharedFields(changedId){
     olx_ram: 'tg_ram',
     olx_ssd: 'tg_disk',
     olx_gpu: 'tg_gpu',
+    olx_gpu_custom: 'tg_gpu_custom',
+    tg_gpu_custom: 'olx_gpu_custom',
     olx_code: 'tg_number',
     olx_battery: 'tg_battery',
     olx_price: 'tg_price',
     olx_state: 'tg_condition',
+    olx_model_custom: 'tg_model_custom',
+    tg_model_custom: 'olx_model_custom',
+    olx_cpu_custom: 'tg_cpu_custom',
+    tg_cpu_custom: 'olx_cpu_custom',
     tg_model: 'olx_model',
     tg_cpu: 'olx_cpu',
     tg_ram: 'olx_ram',
@@ -437,7 +478,7 @@ function syncSharedFields(changedId){
 }
 
 function bindSharedSync(){
-  ['olx_model','olx_cpu','olx_ram','olx_ssd','olx_gpu','olx_code','olx_battery','olx_price','olx_state','tg_model','tg_cpu','tg_ram','tg_disk','tg_gpu','tg_number','tg_battery','tg_price','tg_condition']
+  ['olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','tg_model','tg_model_custom','tg_cpu','tg_cpu_custom','tg_ram','tg_disk','tg_gpu','tg_gpu_custom','tg_number','tg_battery','tg_price','tg_condition']
     .forEach(id => {
       const el = document.getElementById(id);
       if(el){
@@ -446,9 +487,22 @@ function bindSharedSync(){
       }
     });
 
-  ['olx_model','olx_cpu','olx_ram','olx_ssd','olx_gpu','olx_code','olx_battery','olx_price','olx_state'].forEach(syncSharedFields);
+  ['olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state'].forEach(syncSharedFields);
 
-  ['olx_type','olx_model','olx_cpu','olx_ram','olx_ssd','olx_gpu','olx_code','olx_battery','olx_price','olx_state']
+  document.getElementById('olx_model').addEventListener('change', () => toggleCustomField('olx','model'));
+  document.getElementById('tg_model').addEventListener('change', () => toggleCustomField('tg','model'));
+  document.getElementById('olx_cpu').addEventListener('change', () => toggleCustomField('olx','cpu'));
+  document.getElementById('tg_cpu').addEventListener('change', () => toggleCustomField('tg','cpu'));
+  document.getElementById('olx_gpu').addEventListener('change', () => toggleCustomField('olx','gpu'));
+  document.getElementById('tg_gpu').addEventListener('change', () => toggleCustomField('tg','gpu'));
+  toggleCustomField('olx','model');
+  toggleCustomField('tg','model');
+  toggleCustomField('olx','cpu');
+  toggleCustomField('tg','cpu');
+  toggleCustomField('olx','gpu');
+  toggleCustomField('tg','gpu');
+
+  ['olx_type','olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_backlight']
     .forEach(id => {
       const el = document.getElementById(id);
       if(el){
@@ -457,7 +511,7 @@ function bindSharedSync(){
       }
     });
 
-  ['tg_model','tg_number','tg_cpu','tg_ram','tg_disk','tg_gpu','tg_battery','tg_condition','tg_price']
+  ['tg_model','tg_model_custom','tg_number','tg_cpu','tg_cpu_custom','tg_ram','tg_disk','tg_gpu','tg_gpu_custom','tg_battery','tg_condition','tg_price']
     .forEach(id => {
       const el = document.getElementById(id);
       if(el){
@@ -497,15 +551,25 @@ async function copyField(id, successText){
 }
 function generateOlx(){
   const type = document.getElementById('olx_type').value;
-  const model = document.getElementById('olx_model').value;
-  const cpu = document.getElementById('olx_cpu').value;
+  const modelSelect = document.getElementById('olx_model').value;
+  const model = modelSelect === 'Інше'
+    ? (document.getElementById('olx_model_custom').value.trim() || 'Інше')
+    : modelSelect;
+  const cpuSelect = document.getElementById('olx_cpu').value;
+  const cpu = cpuSelect === 'Інше'
+    ? (document.getElementById('olx_cpu_custom').value.trim() || 'Інше')
+    : cpuSelect;
   const ram = document.getElementById('olx_ram').value;
   const ssd = document.getElementById('olx_ssd').value;
-  const gpuRaw = document.getElementById('olx_gpu').value;
+  const gpuSelect = document.getElementById('olx_gpu').value;
+  const gpuRaw = gpuSelect === 'Інше'
+    ? (document.getElementById('olx_gpu_custom').value.trim() || 'Інше')
+    : gpuSelect;
   const gpu = gpuRaw.includes("Quadro") ? `<strong>${gpuRaw}</strong>` : gpuRaw;
   const code = document.getElementById('olx_code').value.trim();
   const state = document.getElementById('olx_state').value;
   const battery = document.getElementById('olx_battery').value.trim();
+  const backlight = document.getElementById('olx_backlight').checked;
 
   const titleExtra = type === "Потужний" ? "Ноутбук для монтажу" : "Ноутбук для роботи";
   const title = `${type} ${model} | ${cpu} | ${ram} | ${ssd} | ${titleExtra}${code ? ` | ${code}` : ''}`;
@@ -519,8 +583,27 @@ function generateOlx(){
     let cores = "";
     if(cpu.includes("7820")) cores = "4 ядер 8 потоків";
     if(cpu.includes("8750") || cpu.includes("9850")) cores = "6 ядер 12 потоків";
-    descriptionText = `мобільна робоча станція для професійних задач. Ноутбук сформований на платформі, що орієнтована на виконання професійних прикладних задач, і комплектується процесором ${cpu} <strong>${cores}</strong>, що визначає клас пристрою як мобільну робочу станцію. Система постачається з ${ram}, що дозволяє обробляти великі обсяги даних.`;
+    const coresText = cores ? ` <strong>${cores}</strong>` : "";
+    descriptionText = `мобільна робоча станція для професійних задач. Ноутбук сформований на платформі, що орієнтована на виконання професійних прикладних задач, і комплектується процесором ${cpu}${coresText}, що визначає клас пристрою як мобільну робочу станцію. Система постачається з ${ram}, що дозволяє обробляти великі обсяги даних.`;
   }
+  if(!descriptionText){
+    descriptionText = `з процесором ${cpu}, ${ram}, та накопичувачем на ${ssd}. Відмінний вибір для роботи та навчання.`;
+  }
+
+  const characteristics = [
+    "Екран - 15.6, FHD (1920 x 1080)",
+    `Процесор - ${cpu}`,
+    `Оперативка - ${ram}`,
+    `Пам'ять - ${ssd}`,
+    `Відеокарта - ${gpu}`
+  ];
+  if(backlight) characteristics.push("Клавіатура з підсвіткою");
+  characteristics.push("Всі характеристики на останньому фото");
+  characteristics.push("Сканер відбитка пальців");
+  characteristics.push("USB порт для зарядки телефонів та планшетів");
+  characteristics.push("Порти - Має все необхідне (USB-C, HDMI, USB), не потрібно носити з собою перехідники.");
+  characteristics.push("Корпус - Алюмінієвий корпус");
+  const characteristicsText = characteristics.map((line, i) => `${i + 1}. ${line}`).join('\n');
 
   const text = `
 <strong>Код товару : ${code}</strong>
@@ -528,17 +611,7 @@ function generateOlx(){
 <strong>${type} ${model}</strong> - ${descriptionText}
 
 <strong>Характеристики:</strong>
-1. Екран - 15.6, FHD (1920 x 1080)
-2. Процесор - ${cpu}
-3. Оперативка - ${ram}
-4. Пам'ять - ${ssd}
-5. Відеокарта - ${gpu}
-6. Клавіатура з підсвіткою
-7. Всі характеристики на останньому фото
-8. Сканер відбитка пальців
-9. USB порт для зарядки телефонів та планшетів
-10. Порти - Має все необхідне (USB-C, HDMI, USB), не потрібно носити з собою перехідники.
-11. Корпус - Алюмінієвий корпус
+${characteristicsText}
 
 <strong>Додатково:</strong>
 • Комплектація: Ноутбук, оригінальна зарядка
@@ -579,12 +652,21 @@ function generateOlx(){
   showToast('OLX опис згенеровано');
 }
 function generateTelegram(){
-  const model = document.getElementById('tg_model').value;
+  const modelSelect = document.getElementById('tg_model').value;
+  const model = modelSelect === 'Інше'
+    ? (document.getElementById('tg_model_custom').value.trim() || 'Інше')
+    : modelSelect;
   const number = document.getElementById('tg_number').value;
-  const cpu = document.getElementById('tg_cpu').value;
+  const cpuSelect = document.getElementById('tg_cpu').value;
+  const cpu = cpuSelect === 'Інше'
+    ? (document.getElementById('tg_cpu_custom').value.trim() || 'Інше')
+    : cpuSelect;
   const ram = document.getElementById('tg_ram').value;
   const disk = document.getElementById('tg_disk').value;
-  const gpu = document.getElementById('tg_gpu').value;
+  const gpuSelectTg = document.getElementById('tg_gpu').value;
+  const gpu = gpuSelectTg === 'Інше'
+    ? (document.getElementById('tg_gpu_custom').value.trim() || 'Інше')
+    : gpuSelectTg;
   const battery = document.getElementById('tg_battery').value;
   const condition = document.getElementById('tg_condition').value;
   const price = document.getElementById('tg_price').value;
