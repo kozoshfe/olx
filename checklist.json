@@ -10,6 +10,7 @@
   {"label":"Дискретна відеокарта","type":"options","options":["Так","Ні"]},
   {"label":"Чистка зроблена","type":"options","options":["Так","Ні"]},
   {"label":"Батарея, %","type":"line"},
-  {"label":"Проблеми є?","type":"line"},
-  {"label":"CCD запас?","type":"line"}
+  {"label":"Проблеми є","type":"options","options":["Так","Ні"]},
+  {"label":"Фото зроблені?","type":"options","options":["Так","Ні"]},
+  {"label":"На OLX виставлено?","type":"options","options":["Так","Ні"]}
 ]
