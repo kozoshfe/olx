@@ -434,6 +434,7 @@ textarea{
         </div>
         <div class="actions">
           <button class="btn btn-primary" onclick="updateWordPreview()">Оновити чек-лист</button>
+          <button class="btn btn-primary" onclick="downloadChecklistJson()">Завантажити checklist.json</button>
           <button class="btn btn-success" onclick="downloadWordChecklist()">Завантажити Word (.doc)</button>
         </div>
       </div>
@@ -759,6 +760,8 @@ function escapeHtml(value){
   return String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
 }
 const checklistStorageKey = 'laptop-checklist-items';
+const isGitHubPages = location.hostname.endsWith('.github.io');
+const checklistUrl = isGitHubPages ? 'checklist.json' : '/api/checklist';
 const defaultChecklistItems = [
   {label:'Номер ноутбука', type:'line'}, {label:'Памʼять (RAM)', type:'options', options:['8GB', '16GB', '24GB', '32GB']},
   {label:'Памʼять (SSD)', type:'options', options:['256GB', '512GB']}, {label:'Екран', type:'options', options:['HD', 'FHD']},
@@ -785,7 +788,8 @@ function loadChecklistItems(){
 }
 function saveChecklistItems(){
   localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
-  fetch('/api/checklist', {
+  if(isGitHubPages) return;
+  fetch(checklistUrl, {
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify(checklistItems)
@@ -793,7 +797,7 @@ function saveChecklistItems(){
 }
 async function loadChecklistFromJson(){
   try{
-    const response = await fetch('/api/checklist', {cache:'no-store'});
+    const response = await fetch(checklistUrl, {cache:'no-store'});
     const saved = normalizeChecklistItems(await response.json());
     if(!response.ok || !saved) return;
     checklistItems = saved;
@@ -816,6 +820,14 @@ function setOptionsCount(index, count){ const options = checklistItems[index].op
 function setChecklistItemType(index, type){ checklistItems[index].type = type; if(type === 'options' && !Array.isArray(checklistItems[index].options)) checklistItems[index].options = ['Так', 'Ні']; saveChecklistItems(); renderChecklistEditor(); updateWordPreview(); }
 function addChecklistItem(){ checklistItems.push({label:'Новий пункт', type:'line', options:['Так', 'Ні']}); saveChecklistItems(); renderChecklistEditor(); updateWordPreview(); }
 function deleteChecklistItem(index){ checklistItems.splice(index, 1); saveChecklistItems(); renderChecklistEditor(); updateWordPreview(); }
+function downloadChecklistJson(){
+  const blob = new Blob([`${JSON.stringify(checklistItems, null, 2)}\n`], {type:'application/json'});
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'checklist.json';
+  document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(link.href);
+  showToast('Файл checklist.json завантажено — замініть ним файл у GitHub');
+}
 function wordLabels(){
   return checklistItems.filter(item => item.label.trim()).slice(0, 18).map(item => ({label:item.label, options:item.type === 'line' ? 'лінія' : (item.options || []).filter(Boolean).join(', ') || 'Варіант'}));
 }
