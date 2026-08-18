@@ -56,7 +56,7 @@ button,input,select,textarea{font:inherit}
 .switcher-wrap{margin-top:18px;display:flex;justify-content:flex-start}
 .switcher{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:repeat(3,1fr);
   gap:8px;
   padding:8px;
   background:rgba(9,18,39,.65);
@@ -173,6 +173,51 @@ textarea{
   font-weight:800;
 }
 .footer-note{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.45}
+.word-layout{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-top:18px}
+.word-preview{
+  background:#fff;color:#151515;border-radius:18px;padding:24px;
+  min-height:680px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);font-family:Arial,sans-serif;
+}
+.word-preview-sheet{display:grid;grid-template-columns:1fr 1fr;gap:24px 38px}
+.checklist{font-size:12px;line-height:1.3}
+.checklist-row{display:grid;grid-template-columns:auto 1fr;gap:7px;align-items:baseline;margin:0 0 8px}
+.checklist-row.line-row{margin-top:17px}
+.checklist-row.spaced{margin-top:18px}
+.checklist-line{border-bottom:1px solid #333;min-height:14px}
+.choice{display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:7px 18px}
+.choice span{white-space:nowrap}
+.word-preview .checklist-form{width:100%;min-height:390px;border-collapse:collapse;table-layout:fixed;border:1px solid #aeb9c9;color:#151515;font-size:11px;line-height:1.15}
+.word-preview .col-number{width:7%}
+.word-preview .col-label{width:53%}
+.word-preview .col-entry{width:40%}
+.word-preview .form-title{padding:6px 7px 5px;background:#e8eef7;color:#314568;font-size:9px;font-weight:800;letter-spacing:.02em;border-bottom:1px solid #aeb9c9}
+.word-preview .field-number{width:5%;padding:5px 0 4px 3px;vertical-align:top;color:#63718a;font-weight:800}
+.word-preview .field-label{width:55%;padding:5px 3px 4px 0;vertical-align:top}
+.word-preview .field-entry{width:40%;padding:5px 5px 4px 2px;vertical-align:top}
+.word-preview .field-entry-line{border-bottom:1px solid #334155;height:42px}
+.word-preview .field-row td{border-bottom:1px solid #d7deea}
+.word-preview .field-row-last td{border-bottom:0}
+.word-preview .line-label-row td{border-bottom:0;padding-bottom:1px}
+.word-preview .line-write-row td{padding-top:0}
+.word-preview .writing-line{padding:0 5px 2px;vertical-align:top}
+.word-preview .writing-rule{height:23px;border-bottom:1px solid #334155}
+.word-preview .options-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.word-preview .option-cell{width:50%;padding:0 2px 2px 0;white-space:nowrap;vertical-align:top}
+.word-preview .box{font-size:12px;vertical-align:-1px}
+.word-preview-title{margin:0 0 14px;font-size:13px;color:#63718b;font-weight:800}
+.checklist-editor{display:grid;gap:10px}
+.checklist-item{padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(7,15,35,.38)}
+.checklist-item-top{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:center}
+.checklist-item-top input{padding:10px 12px;border-radius:12px}
+.item-type{display:flex;gap:6px;margin-top:9px;align-items:center;flex-wrap:wrap}
+.type-btn{border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:#0c1630;color:#b9c7e7;font-size:12px;font-weight:800;cursor:pointer}
+.type-btn.active{background:rgba(79,135,255,.28);border-color:rgba(79,135,255,.7);color:#fff}
+.item-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:9px}.item-options input{padding:9px 11px;border-radius:11px}
+.option-count{margin-left:auto;display:flex;align-items:center;gap:7px;color:#97a7cb;font-size:12px;font-weight:800}.option-count select{width:auto;padding:6px 8px;border-radius:9px;font-size:12px}
+.item-delete{border:0;border-radius:10px;width:34px;height:34px;background:rgba(239,68,68,.15);color:#ff9d9d;font-size:18px;cursor:pointer}
+.add-item{width:100%;border:1px dashed rgba(122,150,212,.45);border-radius:14px;min-height:44px;background:transparent;color:#c8d7f5;font-weight:800;cursor:pointer}
+@media (max-width:980px){.word-layout{grid-template-columns:1fr}}
+@media (max-width:640px){.word-preview{padding:14px;overflow:auto}.word-preview-sheet{min-width:590px;gap:20px}}
 .toast{
   position:fixed;
   right:18px;
@@ -206,11 +251,11 @@ textarea{
 <div class="container">
   <div class="header">
     <h1>Генератор описів ноутбуків</h1>
-    <p>За замовчуванням відкритий OLX генератор. Кнопкою зверху можеш переключитися на Telegram генератор.</p>
     <div class="switcher-wrap">
       <div class="switcher">
         <button class="switch-btn active" data-view="olxView" type="button">OLX генератор</button>
         <button class="switch-btn" data-view="tgView" type="button">Telegram генератор</button>
+        <button class="switch-btn" data-view="wordView" type="button">Чек-лист</button>
       </div>
     </div>
   </div>
@@ -280,7 +325,6 @@ textarea{
         <div class="actions">
           <button class="btn btn-primary" onclick="generateOlx()">Згенерувати OLX</button>
         </div>
-        <div class="footer-note">Тут генерується заголовок і повний опис для OLX.</div>
       </div>
 
       <div class="card output-card">
@@ -363,7 +407,6 @@ textarea{
         <div class="actions">
           <button class="btn btn-primary" onclick="generateTelegram()">Згенерувати Telegram</button>
         </div>
-        <div class="footer-note">Тут генерується коротший, готовий текст під Telegram.</div>
       </div>
 
       <div class="card output-card">
@@ -378,6 +421,25 @@ textarea{
         <div class="actions">
           <button class="btn btn-success" onclick="copyField('tg_result','Текст скопійовано')">Копіювати текст</button>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="wordView" class="generator-view">
+    <div class="word-layout">
+      <div class="card form-card">
+        <h2 class="section-title">Чек-лист перевірки ноутбука</h2>
+        <div class="grid">
+          <div class="field full"><label>Пункти чек-листа</label><div id="checklist_editor" class="checklist-editor"></div><button class="add-item" type="button" onclick="addChecklistItem()">＋ Додати пункт</button></div>
+        </div>
+        <div class="actions">
+          <button class="btn btn-primary" onclick="updateWordPreview()">Оновити чек-лист</button>
+          <button class="btn btn-success" onclick="downloadWordChecklist()">Завантажити Word (.doc)</button>
+        </div>
+      </div>
+      <div class="card output-card">
+        <div class="output-top"><h2>Попередній перегляд</h2><div class="badge">📄 4 чек-листи · A4</div></div>
+        <div class="word-preview"><p id="word_preview_title" class="word-preview-title">Так виглядатиме сторінка у Word</p><div id="word_preview" class="word-preview-sheet"></div></div>
       </div>
     </div>
   </section>
@@ -693,9 +755,142 @@ function generateTelegram(){
   document.getElementById('tg_result').value = text;
   showToast('Telegram текст згенеровано');
 }
+function escapeHtml(value){
+  return String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
+}
+const checklistStorageKey = 'laptop-checklist-items';
+const defaultChecklistItems = [
+  {label:'Номер ноутбука', type:'line'}, {label:'Памʼять (RAM)', type:'options', options:['8GB', '16GB', '24GB', '32GB']},
+  {label:'Памʼять (SSD)', type:'options', options:['256GB', '512GB']}, {label:'Екран', type:'options', options:['HD', 'FHD']},
+  {label:'Процесор', type:'line'}, {label:'Підсвітка клавіатури', type:'options', options:['Так', 'Ні']},
+  {label:'Серійний номер', type:'line'}, {label:'Ціна ноутбука', type:'line'},
+  {label:'Дискретна відеокарта', type:'options', options:['Так', 'Ні']}, {label:'Чистка зроблена', type:'options', options:['Так', 'Ні']},
+  {label:'Батарея, %', type:'line'}, {label:'Проблеми є', type:'options', options:['Так', 'Ні']},
+  {label:'Фото зроблені?', type:'options', options:['Так', 'Ні']}, {label:'На OLX виставлено?', type:'options', options:['Так', 'Ні']}
+];
+function normalizeChecklistItems(items){
+  if(!Array.isArray(items)) return null;
+  return items.map(item => ({
+    label: String(item.label || ''),
+    type: item.type === 'options' ? 'options' : 'line',
+    options: Array.isArray(item.options) ? item.options.map(option => String(option || '')) : ['Так', 'Ні']
+  }));
+}
+function loadChecklistItems(){
+  try{
+    const saved = normalizeChecklistItems(JSON.parse(localStorage.getItem(checklistStorageKey)));
+    if(saved) return saved;
+  }catch(error){}
+  return defaultChecklistItems.map(item => ({...item, options: item.options ? [...item.options] : undefined}));
+}
+function saveChecklistItems(){
+  localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
+  fetch('/api/checklist', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(checklistItems)
+  }).catch(() => {});
+}
+async function loadChecklistFromJson(){
+  try{
+    const response = await fetch('/api/checklist', {cache:'no-store'});
+    const saved = normalizeChecklistItems(await response.json());
+    if(!response.ok || !saved) return;
+    checklistItems = saved;
+    localStorage.setItem(checklistStorageKey, JSON.stringify(checklistItems));
+    renderChecklistEditor();
+    updateWordPreview();
+  }catch(error){}
+}
+let checklistItems = loadChecklistItems();
+function renderChecklistEditor(){
+  document.getElementById('checklist_editor').innerHTML = checklistItems.map((item, index) => `<div class="checklist-item">
+    <div class="checklist-item-top"><input value="${escapeHtml(item.label)}" aria-label="Назва пункту ${index + 1}" oninput="updateChecklistItem(${index}, 'label', this.value)"><button class="item-delete" type="button" aria-label="Видалити пункт" onclick="deleteChecklistItem(${index})">×</button></div>
+    <div class="item-type"><span style="color:#97a7cb;font-size:12px;font-weight:800">Тип:</span><button type="button" class="type-btn ${item.type === 'line' ? 'active' : ''}" onclick="setChecklistItemType(${index}, 'line')">Лінія для запису</button><button type="button" class="type-btn ${item.type === 'options' ? 'active' : ''}" onclick="setChecklistItemType(${index}, 'options')">Варіанти</button>${item.type === 'options' ? `<label class="option-count">Кількість <select aria-label="Кількість варіантів" onchange="setOptionsCount(${index}, this.value)">${[2,3,4,5,6].map(count => `<option value="${count}" ${item.options.length === count ? 'selected' : ''}>${count}</option>`).join('')}</select></label>` : ''}</div>
+    ${item.type === 'options' ? `<div class="item-options">${item.options.map((option, optionIndex) => `<input value="${escapeHtml(option)}" aria-label="Варіант ${optionIndex + 1} для пункту ${index + 1}" placeholder="Варіант ${optionIndex + 1}" oninput="updateOption(${index}, ${optionIndex}, this.value)">`).join('')}</div>` : ''}
+  </div>`).join('');
+}
+function updateChecklistItem(index, key, value){ checklistItems[index][key] = value; saveChecklistItems(); updateWordPreview(); }
+function updateOption(index, optionIndex, value){ checklistItems[index].options[optionIndex] = value; saveChecklistItems(); updateWordPreview(); }
+function setOptionsCount(index, count){ const options = checklistItems[index].options || []; checklistItems[index].options = Array.from({length:Number(count)}, (_, i) => options[i] || ''); saveChecklistItems(); renderChecklistEditor(); updateWordPreview(); }
+function setChecklistItemType(index, type){ checklistItems[index].type = type; if(type === 'options' && !Array.isArray(checklistItems[index].options)) checklistItems[index].options = ['Так', 'Ні']; saveChecklistItems(); renderChecklistEditor(); updateWordPreview(); }
+function addChecklistItem(){ checklistItems.push({label:'Новий пункт', type:'line', options:['Так', 'Ні']}); saveChecklistItems(); renderChecklistEditor(); updateWordPreview(); }
+function deleteChecklistItem(index){ checklistItems.splice(index, 1); saveChecklistItems(); renderChecklistEditor(); updateWordPreview(); }
+function wordLabels(){
+  return checklistItems.filter(item => item.label.trim()).slice(0, 18).map(item => ({label:item.label, options:item.type === 'line' ? 'лінія' : (item.options || []).filter(Boolean).join(', ') || 'Варіант'}));
+}
+function buildChecklistHtml(){
+  const items = wordLabels();
+  return `<div class="checklist">${items.map((item, index) => {
+    if(item.options.toLowerCase() === 'лінія') return `<div class="checklist-row line-row"><span>${index + 1}. ${escapeHtml(item.label)}</span><span class="checklist-line"></span></div>`;
+    const choices = item.options.split(',').map(option => option.trim()).filter(Boolean);
+    return `<div class="checklist-row"><span>${index + 1}. ${escapeHtml(item.label)}</span><span class="choice">${choices.map(choice => `<span>☐ ${escapeHtml(choice)}</span>`).join('')}</span></div>`;
+  }).join('')}</div>`;
+}
+function updateWordPreview(){
+  const checklist = buildWordChecklistHtml();
+  document.getElementById('word_preview').innerHTML = checklist.repeat(4);
+  document.getElementById('word_preview_title').textContent = 'Так виглядатиме сторінка у Word';
+}
+function buildWordOptionsHtml(choices){
+  const rows = [];
+  for(let index = 0; index < choices.length; index += 2){
+    const first = choices[index] || '';
+    const second = choices[index + 1] || '';
+    rows.push(`<tr><td class="option-cell"><span class="box">&#9744;</span>&nbsp;${escapeHtml(first)}</td><td class="option-cell">${second ? `<span class="box">&#9744;</span>&nbsp;${escapeHtml(second)}` : ''}</td></tr>`);
+  }
+  return `<table class="options-table" role="presentation">${rows.join('')}</table>`;
+}
+function buildWordChecklistHtml(){
+  const items = wordLabels();
+  return `<table class="checklist-form" role="presentation"><colgroup><col class="col-number"><col class="col-label"><col class="col-entry"></colgroup><tr><td colspan="3" class="form-title">ЧЕК-ЛИСТ ПЕРЕВІРКИ НОУТБУКА</td></tr>${items.map((item, index) => {
+    const isLast = index === items.length - 1;
+    const rowClass = isLast ? 'field-row field-row-last' : 'field-row';
+    if(item.options.toLowerCase() === 'лінія') return `<tr class="line-label-row"><td class="field-number">${index + 1}.</td><td class="field-label" colspan="2">${escapeHtml(item.label)}</td></tr><tr class="${rowClass} line-write-row"><td colspan="3" class="writing-line"><div class="writing-rule">&nbsp;</div></td></tr>`;
+    const choices = item.options.split(',').map(option => option.trim()).filter(Boolean);
+    return `<tr class="${rowClass}"><td class="field-number">${index + 1}.</td><td class="field-label">${escapeHtml(item.label)}</td><td class="field-entry">${buildWordOptionsHtml(choices)}</td></tr>`;
+  }).join('')}</table>`;
+}
+function downloadWordChecklist(){
+  const checklist = buildWordChecklistHtml();
+  const documentHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+    @page Section1 { size:595.3pt 841.9pt; margin:18pt 18pt 18pt 18pt; mso-header-margin:18pt; mso-footer-margin:18pt; }
+    div.Section1 { page:Section1; }
+    body{font-family:Arial,sans-serif;font-size:9pt;color:#172033;margin:0;}
+    table.sheet{width:100%;border-collapse:collapse;table-layout:fixed;}
+    td.form-slot{width:50%;vertical-align:top;padding:0 5mm 5mm 0;}
+    td.form-slot-right{padding-right:0;padding-left:3mm;}
+    table.checklist-form{width:100%;height:383pt;border-collapse:collapse;table-layout:fixed;border:1px solid #9aa7bb;}
+    col.col-number{width:7%;}col.col-label{width:53%;}col.col-entry{width:40%;}
+    td.form-title{background:#e8eef7;color:#233b60;font-size:8pt;font-weight:bold;letter-spacing:.2pt;padding:5pt 6pt 4pt;border-bottom:1px solid #9aa7bb;}
+    td.field-number{width:5%;padding:4pt 0 3pt 3pt;vertical-align:top;color:#63718a;font-weight:bold;}
+    td.field-label{width:55%;padding:4pt 3pt 3pt 0;vertical-align:top;}
+    td.field-entry{width:40%;padding:4pt 5pt 3pt 2pt;vertical-align:top;}
+    td.field-entry-line{border-bottom:1px solid #334155;height:30pt;}
+    tr.field-row td{border-bottom:1px solid #d7deea;}
+    tr.field-row-last td{border-bottom:0;}
+    tr.line-label-row td{border-bottom:0;padding-bottom:1pt;}
+    tr.line-write-row td{padding-top:0;}
+    td.writing-line{padding:0 5pt 2pt;vertical-align:top;}
+    div.writing-rule{height:17pt;border-bottom:1px solid #334155;}
+    table.options-table{width:100%;border-collapse:collapse;table-layout:fixed;}
+    td.option-cell{width:50%;padding:0 2pt 1pt 0;white-space:nowrap;vertical-align:top;}
+    span.box{font-family:Arial,sans-serif;font-size:10pt;vertical-align:-1pt;}
+  </style></head><body><div class="Section1"><table class="sheet"><tr><td class="form-slot">${checklist}</td><td class="form-slot form-slot-right">${checklist}</td></tr><tr><td class="form-slot">${checklist}</td><td class="form-slot form-slot-right">${checklist}</td></tr></table></div></body></html>`;
+  const blob = new Blob(['\ufeff', documentHtml], {type:'application/msword'});
+  const link = document.createElement('a');
+  const safeNumber = 'чек-лист_ноутбука';
+  link.href = URL.createObjectURL(blob);
+  link.download = `Чек-лист_${safeNumber}.doc`;
+  document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(link.href);
+  showToast('Word-документ завантажено');
+}
 bindSharedSync();
 generateOlx();
 generateTelegram();
+renderChecklistEditor();
+updateWordPreview();
+loadChecklistFromJson();
 </script>
 </body>
 </html>

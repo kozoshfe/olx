@@ -1,0 +1,16 @@
+[
+  {"label":"Номер ноутбука","type":"line"},
+  {"label":"Памʼять (RAM)","type":"options","options":["8GB","16GB","24GB","32GB"]},
+  {"label":"Памʼять (SSD)","type":"options","options":["256GB","512GB"]},
+  {"label":"Екран","type":"options","options":["HD","FHD"]},
+  {"label":"Процесор","type":"line"},
+  {"label":"Підсвітка клавіатури","type":"options","options":["Так","Ні"]},
+  {"label":"Серійний номер","type":"line"},
+  {"label":"Ціна ноутбука","type":"line"},
+  {"label":"Дискретна відеокарта","type":"options","options":["Так","Ні"]},
+  {"label":"Чистка зроблена","type":"options","options":["Так","Ні"]},
+  {"label":"Батарея, %","type":"line"},
+  {"label":"Проблеми є","type":"options","options":["Так","Ні"]},
+  {"label":"Фото зроблені?","type":"options","options":["Так","Ні"]},
+  {"label":"На OLX виставлено?","type":"options","options":["Так","Ні"]}
+]
