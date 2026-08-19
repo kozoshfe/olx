@@ -7,7 +7,7 @@
   {"label":"Підсвітка клавіатури","type":"options","options":["Так","Ні"]},
   {"label":"Серійний номер","type":"line"},
   {"label":"Ціна ноутбука","type":"line"},
-  {"label":"Дискретна відеокарта","type":"options","options":["Так","Ні"]},
+  {"label":"Дискретна відеокарта","type":"line"},
   {"label":"Чистка зроблена","type":"options","options":["Так","Ні"]},
   {"label":"Батарея, %","type":"line"},
   {"label":"Проблеми є","type":"options","options":["Так","Ні"]},
