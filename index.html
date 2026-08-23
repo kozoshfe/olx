@@ -321,6 +321,14 @@ textarea{
             <input type="checkbox" id="olx_backlight" checked style="width:auto;padding:0;">
             <label for="olx_backlight" style="margin:0;">Підсвітка (клавіатура з підсвіткою)</label>
           </div>
+          <div class="field full" style="flex-direction:row;align-items:center;gap:10px;">
+            <input type="checkbox" id="olx_defect" style="width:auto;padding:0;">
+            <label for="olx_defect" style="margin:0;">Дефект</label>
+          </div>
+          <div class="field full" id="olx_defect_text_wrap" style="display:none;">
+            <label for="olx_defect_text">Текст дефекту</label>
+            <input id="olx_defect_text" placeholder="Наприклад: є подряпина на кришці">
+          </div>
         </div>
         <div class="actions">
           <button class="btn btn-primary" onclick="generateOlx()">Згенерувати OLX</button>
@@ -399,6 +407,14 @@ textarea{
             <label for="tg_condition">🌟 Стан</label>
             <select id="tg_condition"><option selected>8/10</option><option>9/10</option><option>Як новий</option></select>
           </div>
+          <div class="field full" style="flex-direction:row;align-items:center;gap:10px;">
+            <input type="checkbox" id="tg_defect" style="width:auto;padding:0;">
+            <label for="tg_defect" style="margin:0;">Дефект</label>
+          </div>
+          <div class="field full" id="tg_defect_text_wrap" style="display:none;">
+            <label for="tg_defect_text">Текст дефекту</label>
+            <input id="tg_defect_text" placeholder="Тут дефект">
+          </div>
           <div class="field">
             <label for="tg_price">💸 Ціна</label>
             <input type="text" id="tg_price" value="12500">
@@ -433,7 +449,7 @@ textarea{
           <div class="field full"><label>Пункти чек-листа</label><div id="checklist_editor" class="checklist-editor"></div><button class="add-item" type="button" onclick="addChecklistItem()">＋ Додати пункт</button></div>
         </div>
         <div class="actions">
-          <button class="btn btn-success" onclick="downloadWordChecklist()">Завантажити Word (.doc)</button>
+          <button class="btn btn-success" onclick="downloadWordChecklist()">Завантажити Word (.docx)</button>
         </div>
       </div>
       <div class="card output-card">
@@ -455,6 +471,13 @@ function toggleCustomField(prefix, field){
   wrap.style.display = select.value === 'Інше' ? '' : 'none';
 }
 
+function toggleDefectField(prefix){
+  const checkbox = document.getElementById(prefix + '_defect');
+  const wrap = document.getElementById(prefix + '_defect_text_wrap');
+  if(!checkbox || !wrap) return;
+  wrap.style.display = checkbox.checked ? '' : 'none';
+}
+
 function syncSharedFields(changedId){
   const pairs = {
     olx_model: 'tg_model',
@@ -468,6 +491,8 @@ function syncSharedFields(changedId){
     olx_battery: 'tg_battery',
     olx_price: 'tg_price',
     olx_state: 'tg_condition',
+    olx_defect: 'tg_defect',
+    olx_defect_text: 'tg_defect_text',
     olx_model_custom: 'tg_model_custom',
     tg_model_custom: 'olx_model_custom',
     olx_cpu_custom: 'tg_cpu_custom',
@@ -480,7 +505,9 @@ function syncSharedFields(changedId){
     tg_number: 'olx_code',
     tg_battery: 'olx_battery',
     tg_price: 'olx_price',
-    tg_condition: 'olx_state'
+    tg_condition: 'olx_state',
+    tg_defect: 'olx_defect',
+    tg_defect_text: 'olx_defect_text'
   };
 
   const mapValues = {
@@ -525,10 +552,17 @@ function syncSharedFields(changedId){
   const target = document.getElementById(targetId);
   if(!source || !target) return;
 
-  let value = source.value;
-  if(mapValues[changedId]) value = mapValues[changedId][value] || value;
+  if(source.type === 'checkbox'){
+    target.checked = source.checked;
+  }else{
+    let value = source.value;
+    if(mapValues[changedId]) value = mapValues[changedId][value] || value;
+    target.value = value;
+  }
 
-  target.value = value;
+  if(changedId.includes('_defect')){
+    toggleDefectField(targetId.startsWith('olx_') ? 'olx' : 'tg');
+  }
 
   if(changedId.startsWith('olx_')){
     generateTelegram();
@@ -539,7 +573,7 @@ function syncSharedFields(changedId){
 }
 
 function bindSharedSync(){
-  ['olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','tg_model','tg_model_custom','tg_cpu','tg_cpu_custom','tg_ram','tg_disk','tg_gpu','tg_gpu_custom','tg_number','tg_battery','tg_price','tg_condition']
+  ['olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_defect','olx_defect_text','tg_model','tg_model_custom','tg_cpu','tg_cpu_custom','tg_ram','tg_disk','tg_gpu','tg_gpu_custom','tg_number','tg_battery','tg_price','tg_condition','tg_defect','tg_defect_text']
     .forEach(id => {
       const el = document.getElementById(id);
       if(el){
@@ -548,7 +582,7 @@ function bindSharedSync(){
       }
     });
 
-  ['olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state'].forEach(syncSharedFields);
+  ['olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_defect','olx_defect_text'].forEach(syncSharedFields);
 
   document.getElementById('olx_model').addEventListener('change', () => toggleCustomField('olx','model'));
   document.getElementById('tg_model').addEventListener('change', () => toggleCustomField('tg','model'));
@@ -556,14 +590,18 @@ function bindSharedSync(){
   document.getElementById('tg_cpu').addEventListener('change', () => toggleCustomField('tg','cpu'));
   document.getElementById('olx_gpu').addEventListener('change', () => toggleCustomField('olx','gpu'));
   document.getElementById('tg_gpu').addEventListener('change', () => toggleCustomField('tg','gpu'));
+  document.getElementById('olx_defect').addEventListener('change', () => toggleDefectField('olx'));
+  document.getElementById('tg_defect').addEventListener('change', () => toggleDefectField('tg'));
   toggleCustomField('olx','model');
   toggleCustomField('tg','model');
   toggleCustomField('olx','cpu');
   toggleCustomField('tg','cpu');
   toggleCustomField('olx','gpu');
   toggleCustomField('tg','gpu');
+  toggleDefectField('olx');
+  toggleDefectField('tg');
 
-  ['olx_type','olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_backlight']
+  ['olx_type','olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_backlight','olx_defect','olx_defect_text']
     .forEach(id => {
       const el = document.getElementById(id);
       if(el){
@@ -572,7 +610,7 @@ function bindSharedSync(){
       }
     });
 
-  ['tg_model','tg_model_custom','tg_number','tg_cpu','tg_cpu_custom','tg_ram','tg_disk','tg_gpu','tg_gpu_custom','tg_battery','tg_condition','tg_price']
+  ['tg_model','tg_model_custom','tg_number','tg_cpu','tg_cpu_custom','tg_ram','tg_disk','tg_gpu','tg_gpu_custom','tg_battery','tg_condition','tg_defect','tg_defect_text','tg_price']
     .forEach(id => {
       const el = document.getElementById(id);
       if(el){
@@ -631,6 +669,8 @@ function generateOlx(){
   const state = document.getElementById('olx_state').value;
   const battery = document.getElementById('olx_battery').value.trim();
   const backlight = document.getElementById('olx_backlight').checked;
+  const defect = document.getElementById('olx_defect').checked;
+  const defectText = document.getElementById('olx_defect_text').value.trim();
 
   const titleExtra = type === "Потужний" ? "Ноутбук для монтажу" : "Ноутбук для роботи";
   const title = `${type} ${model} | ${cpu} | ${ram} | ${ssd} | ${titleExtra}${code ? ` | ${code}` : ''}`;
@@ -665,6 +705,7 @@ function generateOlx(){
   characteristics.push("Порти - Має все необхідне (USB-C, HDMI, USB), не потрібно носити з собою перехідники.");
   characteristics.push("Корпус - Алюмінієвий корпус");
   const characteristicsText = characteristics.map((line, i) => `${i + 1}. ${line}`).join('\n');
+  const defectBlock = defect ? `\nДефект : <strong>${defectText}</strong>\n` : "";
 
   const text = `
 <strong>Код товару : ${code}</strong>
@@ -673,7 +714,7 @@ function generateOlx(){
 
 <strong>Характеристики:</strong>
 ${characteristicsText}
-
+${defectBlock}
 <strong>Додатково:</strong>
 • Комплектація: Ноутбук, оригінальна зарядка
 • Зовнішній вигляд - <strong>${state}</strong>
@@ -730,7 +771,10 @@ function generateTelegram(){
     : gpuSelectTg;
   const battery = document.getElementById('tg_battery').value;
   const condition = document.getElementById('tg_condition').value;
+  const defect = document.getElementById('tg_defect').checked;
+  const defectText = document.getElementById('tg_defect_text').value.trim();
   const price = document.getElementById('tg_price').value;
+  const defectLine = defect ? `⚠️ "${defectText}"\n` : "";
 
   const text = `💻 ${model}\n` +
     `🔢 Номер ноутбука: **${number}**\n` +
@@ -742,6 +786,7 @@ function generateTelegram(){
     `🔋 Стан батареї: **${battery}%**\n` +
     `📐 Екран: 15.6" з роздільною здатністю [1920x1080]\n` +
     `🌟 Стан: **${condition}**\n` +
+    defectLine +
     `🔧 Проведено чистку і заміну термопасти\n` +
     `🎁 Комплект: Ноутбук + Оригінальне зарядне\n` +
     `🪟 Ліцензійний Windows\n` +
@@ -862,39 +907,165 @@ function buildWordChecklistHtml(){
     return `<tr class="${rowClass}"><td class="field-number">${index + 1}.</td><td class="field-label">${escapeHtml(item.label)}</td><td class="field-entry">${buildWordOptionsHtml(choices)}</td></tr>`;
   }).join('')}</table>`;
 }
+function escapeXml(value){
+  return String(value || '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[char]));
+}
+function wordRunXml(text, options = {}){
+  const size = options.size || 18;
+  const color = options.color || '172033';
+  const bold = options.bold ? '<w:b/>' : '';
+  return `<w:r><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:sz w:val="${size}"/><w:color w:val="${color}"/>${bold}</w:rPr><w:t xml:space="preserve">${escapeXml(text)}</w:t></w:r>`;
+}
+function wordParagraphXml(text, options = {}){
+  const align = options.align ? `<w:jc w:val="${options.align}"/>` : '';
+  return `<w:p><w:pPr>${align}<w:spacing w:before="0" w:after="0" w:line="220" w:lineRule="auto"/></w:pPr>${wordRunXml(text, options)}</w:p>`;
+}
+function wordCellXml(content, width, options = {}){
+  const gridSpan = options.gridSpan ? `<w:gridSpan w:val="${options.gridSpan}"/>` : '';
+  const shade = options.shade ? `<w:shd w:fill="${options.shade}"/>` : '';
+  const bottomBorder = options.bottomBorder ? '<w:tcBorders><w:bottom w:val="single" w:sz="8" w:space="0" w:color="334155"/></w:tcBorders>' : '';
+  const bordersNil = options.bordersNil ? '<w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/></w:tcBorders>' : '';
+  const margin = options.margin || {top:70, right:70, bottom:55, left:70};
+  const marginXml = `<w:tcMar><w:top w:w="${margin.top}" w:type="dxa"/><w:right w:w="${margin.right}" w:type="dxa"/><w:bottom w:w="${margin.bottom}" w:type="dxa"/><w:left w:w="${margin.left}" w:type="dxa"/></w:tcMar>`;
+  return `<w:tc><w:tcPr><w:tcW w:w="${width}" w:type="dxa"/>${gridSpan}${shade}${bottomBorder}${bordersNil}${marginXml}<w:vAlign w:val="top"/></w:tcPr>${content}</w:tc>`;
+}
+function wordTableBordersXml(){
+  return '<w:tblBorders><w:top w:val="single" w:sz="6" w:space="0" w:color="9AA7BB"/><w:left w:val="single" w:sz="6" w:space="0" w:color="9AA7BB"/><w:bottom w:val="single" w:sz="6" w:space="0" w:color="9AA7BB"/><w:right w:val="single" w:sz="6" w:space="0" w:color="9AA7BB"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="D7DEEA"/><w:insideV w:val="nil"/></w:tblBorders>';
+}
+function wordNoTableBordersXml(){
+  return '<w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders>';
+}
+function buildChecklistDocxTableXml(){
+  const items = wordLabels();
+  const numberWidth = 365;
+  const labelWidth = 2755;
+  const entryWidth = 2080;
+  const tableWidth = numberWidth + labelWidth + entryWidth;
+  const rows = [
+    `<w:tr><w:trPr><w:trHeight w:val="330" w:hRule="atLeast"/></w:trPr>${wordCellXml(wordParagraphXml('ЧЕК-ЛИСТ ПЕРЕВІРКИ НОУТБУКА', {bold:true, color:'233B60', size:16}), tableWidth, {gridSpan:3, shade:'E8EEF7'})}</w:tr>`
+  ];
+
+  items.forEach((item, index) => {
+    if(item.options.toLowerCase() === 'лінія'){
+      rows.push(`<w:tr><w:trPr><w:trHeight w:val="260" w:hRule="atLeast"/></w:trPr>${wordCellXml(wordParagraphXml(`${index + 1}. ${item.label}`, {size:17}), tableWidth, {gridSpan:3})}</w:tr>`);
+      rows.push(`<w:tr><w:trPr><w:trHeight w:val="310" w:hRule="atLeast"/></w:trPr>${wordCellXml(wordParagraphXml(' ', {size:17}), tableWidth, {gridSpan:3, bottomBorder:true, margin:{top:0, right:70, bottom:20, left:70}})}</w:tr>`);
+      return;
+    }
+
+    const choices = item.options.split(',').map(option => option.trim()).filter(Boolean);
+    const choicesText = choices.map(choice => `☐ ${choice}`).join('     ');
+    rows.push(`<w:tr><w:trPr><w:trHeight w:val="330" w:hRule="atLeast"/></w:trPr>${wordCellXml(wordParagraphXml(`${index + 1}.`, {bold:true, color:'63718A', size:17}), numberWidth)}${wordCellXml(wordParagraphXml(item.label, {size:17}), labelWidth)}${wordCellXml(wordParagraphXml(choicesText, {size:17}), entryWidth)}</w:tr>`);
+  });
+
+  return `<w:tbl><w:tblPr><w:tblW w:w="${tableWidth}" w:type="dxa"/><w:tblLayout w:type="fixed"/>${wordTableBordersXml()}<w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${numberWidth}"/><w:gridCol w:w="${labelWidth}"/><w:gridCol w:w="${entryWidth}"/></w:tblGrid>${rows.join('')}</w:tbl>`;
+}
+function buildChecklistDocumentXml(){
+  const checklist = buildChecklistDocxTableXml();
+  const pageWidth = 11906;
+  const pageHeight = 16838;
+  const margin = 360;
+  const contentWidth = pageWidth - (margin * 2);
+  const slotWidth = Math.floor(contentWidth / 2);
+  const outerCellMarginLeft = 70;
+  const outerCellMarginRight = 210;
+  const outerCellMarginBottom = 240;
+  const outerCell = (right = false) => wordCellXml(`${checklist}${wordParagraphXml(' ', {size:2})}`, slotWidth, {
+    bordersNil:true,
+    margin:{
+      top:0,
+      right:right ? 0 : outerCellMarginRight,
+      bottom:outerCellMarginBottom,
+      left:right ? outerCellMarginLeft : 0
+    }
+  });
+  const outerTable = `<w:tbl><w:tblPr><w:tblW w:w="${contentWidth}" w:type="dxa"/><w:tblLayout w:type="fixed"/>${wordNoTableBordersXml()}<w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${slotWidth}"/><w:gridCol w:w="${contentWidth - slotWidth}"/></w:tblGrid><w:tr>${outerCell(false)}${outerCell(true)}</w:tr><w:tr>${outerCell(false)}${outerCell(true)}</w:tr></w:tbl>`;
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>${outerTable}<w:sectPr><w:pgSz w:w="${pageWidth}" w:h="${pageHeight}"/><w:pgMar w:top="${margin}" w:right="${margin}" w:bottom="${margin}" w:left="${margin}" w:header="${margin}" w:footer="${margin}" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+}
+function buildChecklistStylesXml(){
+  return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial"/><w:sz w:val="18"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:before="0" w:after="0" w:line="220" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults></w:styles>';
+}
+function concatUint8Arrays(parts){
+  const total = parts.reduce((sum, part) => sum + part.length, 0);
+  const output = new Uint8Array(total);
+  let offset = 0;
+  parts.forEach(part => {
+    output.set(part, offset);
+    offset += part.length;
+  });
+  return output;
+}
+const zipCrcTable = (() => {
+  const table = new Uint32Array(256);
+  for(let n = 0; n < 256; n++){
+    let c = n;
+    for(let k = 0; k < 8; k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+    table[n] = c >>> 0;
+  }
+  return table;
+})();
+function zipCrc32(data){
+  let crc = 0xffffffff;
+  for(let i = 0; i < data.length; i++) crc = zipCrcTable[(crc ^ data[i]) & 0xff] ^ (crc >>> 8);
+  return (crc ^ 0xffffffff) >>> 0;
+}
+function zipUint16(value){
+  return new Uint8Array([value & 0xff, (value >>> 8) & 0xff]);
+}
+function zipUint32(value){
+  return new Uint8Array([value & 0xff, (value >>> 8) & 0xff, (value >>> 16) & 0xff, (value >>> 24) & 0xff]);
+}
+function createZipBlob(files, type){
+  const encoder = new TextEncoder();
+  const localParts = [];
+  const centralParts = [];
+  let offset = 0;
+
+  files.forEach(file => {
+    const name = encoder.encode(file.name);
+    const data = typeof file.content === 'string' ? encoder.encode(file.content) : file.content;
+    const crc = zipCrc32(data);
+    const date = 33;
+    const time = 0;
+    const localHeader = concatUint8Arrays([
+      zipUint32(0x04034b50), zipUint16(20), zipUint16(0), zipUint16(0), zipUint16(time), zipUint16(date),
+      zipUint32(crc), zipUint32(data.length), zipUint32(data.length), zipUint16(name.length), zipUint16(0), name
+    ]);
+    const centralHeader = concatUint8Arrays([
+      zipUint32(0x02014b50), zipUint16(20), zipUint16(20), zipUint16(0), zipUint16(0), zipUint16(time), zipUint16(date),
+      zipUint32(crc), zipUint32(data.length), zipUint32(data.length), zipUint16(name.length), zipUint16(0), zipUint16(0),
+      zipUint16(0), zipUint16(0), zipUint32(0), zipUint32(offset), name
+    ]);
+    localParts.push(localHeader, data);
+    centralParts.push(centralHeader);
+    offset += localHeader.length + data.length;
+  });
+
+  const centralDirectory = concatUint8Arrays(centralParts);
+  const end = concatUint8Arrays([
+    zipUint32(0x06054b50), zipUint16(0), zipUint16(0), zipUint16(files.length), zipUint16(files.length),
+    zipUint32(centralDirectory.length), zipUint32(offset), zipUint16(0)
+  ]);
+  return new Blob([concatUint8Arrays([...localParts, centralDirectory, end])], {type});
+}
+function buildChecklistDocxBlob(){
+  const contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/></Types>';
+  const rootRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  const documentRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdStyles" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+  return createZipBlob([
+    {name:'[Content_Types].xml', content:contentTypes},
+    {name:'_rels/.rels', content:rootRels},
+    {name:'word/_rels/document.xml.rels', content:documentRels},
+    {name:'word/document.xml', content:buildChecklistDocumentXml()},
+    {name:'word/styles.xml', content:buildChecklistStylesXml()}
+  ], 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+}
 function downloadWordChecklist(){
-  const checklist = buildWordChecklistHtml();
-  const documentHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
-    @page Section1 { size:595.3pt 841.9pt; margin:18pt 18pt 18pt 18pt; mso-header-margin:18pt; mso-footer-margin:18pt; }
-    div.Section1 { page:Section1; }
-    body{font-family:Arial,sans-serif;font-size:9pt;color:#172033;margin:0;}
-    table.sheet{width:100%;border-collapse:collapse;table-layout:fixed;}
-    td.form-slot{width:50%;vertical-align:top;padding:0 5mm 5mm 0;}
-    td.form-slot-right{padding-right:0;padding-left:3mm;}
-    table.checklist-form{width:100%;height:383pt;border-collapse:collapse;table-layout:fixed;border:1px solid #9aa7bb;}
-    col.col-number{width:7%;}col.col-label{width:53%;}col.col-entry{width:40%;}
-    td.form-title{background:#e8eef7;color:#233b60;font-size:8pt;font-weight:bold;letter-spacing:.2pt;padding:5pt 6pt 4pt;border-bottom:1px solid #9aa7bb;}
-    td.field-number{width:5%;padding:4pt 0 3pt 3pt;vertical-align:top;color:#63718a;font-weight:bold;}
-    td.field-label{width:55%;padding:4pt 3pt 3pt 0;vertical-align:top;}
-    td.field-entry{width:40%;padding:4pt 5pt 3pt 2pt;vertical-align:top;}
-    td.field-entry-line{border-bottom:1px solid #334155;height:30pt;}
-    tr.field-row td{border-bottom:1px solid #d7deea;}
-    tr.field-row-last td{border-bottom:0;}
-    tr.line-label-row td{border-bottom:0;padding-bottom:1pt;}
-    tr.line-write-row td{padding-top:0;}
-    td.writing-line{padding:0 5pt 2pt;vertical-align:top;}
-    div.writing-rule{height:17pt;border-bottom:1px solid #334155;}
-    table.options-table{width:100%;border-collapse:collapse;table-layout:fixed;}
-    td.option-cell{width:50%;padding:0 2pt 1pt 0;white-space:nowrap;vertical-align:top;}
-    span.box{font-family:Arial,sans-serif;font-size:10pt;vertical-align:-1pt;}
-  </style></head><body><div class="Section1"><table class="sheet"><tr><td class="form-slot">${checklist}</td><td class="form-slot form-slot-right">${checklist}</td></tr><tr><td class="form-slot">${checklist}</td><td class="form-slot form-slot-right">${checklist}</td></tr></table></div></body></html>`;
-  const blob = new Blob(['\ufeff', documentHtml], {type:'application/msword'});
+  const blob = buildChecklistDocxBlob();
   const link = document.createElement('a');
-  const safeNumber = 'чек-лист_ноутбука';
   link.href = URL.createObjectURL(blob);
-  link.download = `Чек-лист_${safeNumber}.doc`;
+  link.download = 'Чек-лист_ноутбука.docx';
   document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(link.href);
-  showToast('Word-документ завантажено');
+  showToast('DOCX-документ завантажено');
 }
 bindSharedSync();
 generateOlx();
