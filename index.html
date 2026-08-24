@@ -33,18 +33,9 @@ body{padding:24px}
 button,input,select,textarea{font:inherit}
 .container{max-width:1260px;margin:auto}
 .header{
-  margin-bottom:18px;
-  padding:26px;
-  border:1px solid var(--line);
-  border-radius:30px;
-  background:linear-gradient(180deg,rgba(19,31,61,.96),rgba(15,25,48,.96));
-  box-shadow:var(--shadow);
-}
-.header h1{
-  margin:0 0 8px;
-  font-size:36px;
-  line-height:.95;
-  letter-spacing:-.04em;
+  width:fit-content;
+  max-width:100%;
+  margin:0 auto 18px;
 }
 .header p{
   margin:0;
@@ -53,7 +44,7 @@ button,input,select,textarea{font:inherit}
   line-height:1.5;
   max-width:760px;
 }
-.switcher-wrap{margin-top:18px;display:flex;justify-content:flex-start}
+.switcher-wrap{display:flex;justify-content:center}
 .switcher{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -82,6 +73,23 @@ button,input,select,textarea{font:inherit}
 .generator-view{display:none}
 .generator-view.active{display:block}
 .layout{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-top:18px}
+.layout.output-only{grid-template-columns:1fr}
+.input-layout{margin:18px 0 0}
+.input-layout .form-card{padding:18px}
+.input-layout .section-title{margin-bottom:10px}
+.input-layout .grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 12px}
+.input-layout select,.input-layout input{padding:10px 12px;border-radius:14px}
+.input-layout .actions{margin-top:12px}
+.results-layout{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.results-layout{
+  height:calc(100vh - 156px);
+  height:calc(100dvh - 156px);
+  min-height:0;
+}
+.results-layout .output-card{min-height:0;overflow:hidden}
+.results-layout .field[style*="flex:1"]{min-height:0}
+.results-layout textarea{flex:1;min-height:0;height:auto}
+.results-layout .actions{flex-shrink:0}
 .card{
   background:linear-gradient(180deg,rgba(18,29,57,.96),rgba(14,24,46,.96));
   border:1px solid var(--line);
@@ -99,6 +107,7 @@ button,input,select,textarea{font:inherit}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .field{display:flex;flex-direction:column;gap:7px}
 .field.full{grid-column:1/-1}
+.custom-pair-row{display:grid;grid-column:1/-1;grid-template-columns:1fr 1fr;gap:12px}
 label{
   color:#9fb0cf;
   font-size:12px;
@@ -173,7 +182,7 @@ textarea{
   font-weight:800;
 }
 .footer-note{margin-top:10px;color:var(--muted);font-size:12px;line-height:1.45}
-.word-layout{display:grid;grid-template-columns:420px 1fr;gap:18px;margin-top:18px}
+.word-layout{display:grid;grid-template-columns:1fr;gap:18px;margin-top:18px}
 .word-preview{
   background:#fff;color:#151515;border-radius:18px;padding:24px;
   min-height:680px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08);font-family:Arial,sans-serif;
@@ -205,7 +214,7 @@ textarea{
 .word-preview .option-cell{width:50%;padding:0 2px 2px 0;white-space:nowrap;vertical-align:top}
 .word-preview .box{font-size:12px;vertical-align:-1px}
 .word-preview-title{margin:0 0 14px;font-size:13px;color:#63718b;font-weight:800}
-.checklist-editor{display:grid;gap:10px}
+.checklist-editor{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;align-items:start}
 .checklist-item{padding:12px;border:1px solid var(--line);border-radius:16px;background:rgba(7,15,35,.38)}
 .checklist-item-top{display:grid;grid-template-columns:1fr auto;gap:9px;align-items:center}
 .checklist-item-top input{padding:10px 12px;border-radius:12px}
@@ -216,8 +225,8 @@ textarea{
 .option-count{margin-left:auto;display:flex;align-items:center;gap:7px;color:#97a7cb;font-size:12px;font-weight:800}.option-count select{width:auto;padding:6px 8px;border-radius:9px;font-size:12px}
 .item-delete{border:0;border-radius:10px;width:34px;height:34px;background:rgba(239,68,68,.15);color:#ff9d9d;font-size:18px;cursor:pointer}
 .add-item{width:100%;border:1px dashed rgba(122,150,212,.45);border-radius:14px;min-height:44px;background:transparent;color:#c8d7f5;font-weight:800;cursor:pointer}
-@media (max-width:980px){.word-layout{grid-template-columns:1fr}}
-@media (max-width:640px){.word-preview{padding:14px;overflow:auto}.word-preview-sheet{min-width:590px;gap:20px}}
+@media (max-width:980px){.word-layout{grid-template-columns:1fr}.checklist-editor{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.word-preview{padding:14px;overflow:auto}.word-preview-sheet{min-width:590px;gap:20px}.checklist-editor{grid-template-columns:1fr}}
 .toast{
   position:fixed;
   right:18px;
@@ -235,13 +244,17 @@ textarea{
   z-index:100;
 }
 .toast.show{opacity:1;transform:translateY(0)}
-@media (max-width:980px){.layout{grid-template-columns:1fr}}
+@media (max-width:980px){
+  .layout,.results-layout{grid-template-columns:1fr}
+  .input-layout .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .results-layout{height:auto}
+  .results-layout .output-card{min-height:560px}
+}
 @media (max-width:640px){
   body{padding:14px}
-  .header{padding:18px}
-  .header h1{font-size:28px}
+  .header{width:100%}
   .form-card,.output-card{padding:16px}
-  .grid{grid-template-columns:1fr}
+  .grid,.input-layout .grid{grid-template-columns:1fr}
   .copy-row{grid-template-columns:1fr}
   .switcher{width:100%}
 }
@@ -250,18 +263,17 @@ textarea{
 <body>
 <div class="container">
   <div class="header">
-    <h1>Генератор описів ноутбуків</h1>
     <div class="switcher-wrap">
       <div class="switcher">
-        <button class="switch-btn active" data-view="olxView" type="button">OLX генератор</button>
-        <button class="switch-btn" data-view="tgView" type="button">Telegram генератор</button>
+        <button class="switch-btn active" data-view="inputView" type="button">Параметри</button>
+        <button class="switch-btn" data-view="resultsView" type="button">Результати</button>
         <button class="switch-btn" data-view="wordView" type="button">Чек-лист</button>
       </div>
     </div>
   </div>
 
-  <section id="olxView" class="generator-view active">
-    <div class="layout">
+  <section id="inputView" class="generator-view active">
+    <div class="layout output-only input-layout">
       <div class="card form-card">
         <h2 class="section-title">Параметри ноутбука</h2>
         <div class="grid">
@@ -273,17 +285,29 @@ textarea{
             <label for="olx_model">Модель</label>
             <select id="olx_model"><option>HP EliteBook 850 G7</option><option>HP Zbook G4</option><option>HP Zbook G5</option><option>HP Zbook G6</option><option>Інше</option></select>
           </div>
-          <div class="field full" id="olx_model_custom_wrap" style="display:none;">
-            <label for="olx_model_custom">Своя модель</label>
-            <input id="olx_model_custom" placeholder="Введіть назву моделі">
+          <div class="custom-pair-row" id="olx_model_custom_wrap" style="display:none;">
+            <div class="field">
+              <label for="olx_model_custom">Лінійка моделі</label>
+              <select id="olx_model_custom"><option>HP EliteBook</option><option>HP Zbook</option><option>HP Probook</option></select>
+            </div>
+            <div class="field">
+              <label for="olx_model_details">Конкретна модель</label>
+              <input id="olx_model_details" placeholder="Наприклад: 850 G7">
+            </div>
           </div>
           <div class="field">
             <label for="olx_cpu">Процесор</label>
             <select id="olx_cpu"><option>i5-10210U</option><option>i5-10310U</option><option>i7-8750H</option><option>i7-9850H</option><option>i7-7820HQ</option><option>Інше</option></select>
           </div>
-          <div class="field full" id="olx_cpu_custom_wrap" style="display:none;">
-            <label for="olx_cpu_custom">Свій процесор</label>
-            <input id="olx_cpu_custom" placeholder="Введіть назву процесора">
+          <div class="custom-pair-row" id="olx_cpu_custom_wrap" style="display:none;">
+            <div class="field">
+              <label for="olx_cpu_custom">Серія процесора</label>
+              <select id="olx_cpu_custom"><option>i5-</option><option>i7-</option></select>
+            </div>
+            <div class="field">
+              <label for="olx_cpu_details">Модель процесора</label>
+              <input id="olx_cpu_details" placeholder="Наприклад: 10310U">
+            </div>
           </div>
           <div class="field">
             <label for="olx_ram">Оперативна памʼять</label>
@@ -313,15 +337,15 @@ textarea{
             <label for="olx_price">Ціна</label>
             <input id="olx_price" placeholder="Наприклад: 12500">
           </div>
-          <div class="field full">
+          <div class="field">
             <label for="olx_state">Стан</label>
             <select id="olx_state"><option>9/10</option><option>8/10</option><option>Як новий</option></select>
           </div>
-          <div class="field full" style="flex-direction:row;align-items:center;gap:10px;">
+          <div class="field" style="flex-direction:row;align-items:center;gap:10px;">
             <input type="checkbox" id="olx_backlight" checked style="width:auto;padding:0;">
             <label for="olx_backlight" style="margin:0;">Підсвітка (клавіатура з підсвіткою)</label>
           </div>
-          <div class="field full" style="flex-direction:row;align-items:center;gap:10px;">
+          <div class="field" style="flex-direction:row;align-items:center;gap:10px;">
             <input type="checkbox" id="olx_defect" style="width:auto;padding:0;">
             <label for="olx_defect" style="margin:0;">Дефект</label>
           </div>
@@ -331,15 +355,15 @@ textarea{
           </div>
         </div>
         <div class="actions">
-          <button class="btn btn-primary" onclick="generateOlx()">Згенерувати OLX</button>
+          <button class="btn btn-primary" onclick="generateResults()">Згенерувати описи</button>
         </div>
       </div>
+    </div>
+  </section>
 
+  <section id="resultsView" class="generator-view">
+    <div class="results-layout">
       <div class="card output-card">
-        <div class="output-top">
-          <h2>Результат OLX</h2>
-          <div class="badge">⚡ Заголовок + опис</div>
-        </div>
         <div class="field">
           <label for="olx_titleField">Заголовок</label>
           <div class="copy-row">
@@ -355,81 +379,7 @@ textarea{
           <button class="btn btn-success" onclick="copyField('olx_result','Опис скопійовано')">Копіювати опис</button>
         </div>
       </div>
-    </div>
-  </section>
-
-  <section id="tgView" class="generator-view">
-    <div class="layout">
-      <div class="card form-card">
-        <h2 class="section-title">Параметри ноутбука</h2>
-        <div class="grid">
-          <div class="field full">
-            <label for="tg_model">💻 Модель</label>
-            <select id="tg_model"><option>HP EliteBook 850 G7</option><option selected>HP Zbook 15 G4</option><option>HP Zbook 15 G5</option><option>HP Zbook 15 G6</option><option>Інше</option></select>
-          </div>
-          <div class="field full" id="tg_model_custom_wrap" style="display:none;">
-            <label for="tg_model_custom">Своя модель</label>
-            <input id="tg_model_custom" placeholder="Введіть назву моделі">
-          </div>
-          <div class="field">
-            <label for="tg_number">🔢 Номер ноутбука</label>
-            <input type="text" id="tg_number" value="144">
-          </div>
-          <div class="field">
-            <label for="tg_cpu">🛠 Процесор</label>
-            <select id="tg_cpu"><option>i5-10210U</option><option>i5-10310U</option><option selected>i7-8750H</option><option>i7-9850H</option><option>i7-7820HQ</option><option>Інше</option></select>
-          </div>
-          <div class="field full" id="tg_cpu_custom_wrap" style="display:none;">
-            <label for="tg_cpu_custom">Свій процесор</label>
-            <input id="tg_cpu_custom" placeholder="Введіть назву процесора">
-          </div>
-          <div class="field">
-            <label for="tg_ram">🧠 ОЗП</label>
-            <select id="tg_ram"><option>16 ГБ</option><option selected>32 ГБ</option></select>
-          </div>
-          <div class="field">
-            <label for="tg_disk">💾 Диск</label>
-            <select id="tg_disk"><option>256 ГБ</option><option selected>512 ГБ</option><option>1024 ГБ</option></select>
-          </div>
-          <div class="field">
-            <label for="tg_gpu">🎮 Відеокарта</label>
-            <select id="tg_gpu"><option>HD Graphics 620</option><option>NVIDIA Quadro M2200 4GB</option><option>Nvidia Quadro P2000 4GB</option><option>Nvidia Quadro P1000 4GB</option><option>Nvidia Quadro T2000 4GB</option><option>Nvidia Quadro T1000 4GB</option><option>Інше</option></select>
-          </div>
-          <div class="field full" id="tg_gpu_custom_wrap" style="display:none;">
-            <label for="tg_gpu_custom">Своя відеокарта</label>
-            <input id="tg_gpu_custom" placeholder="Введіть назву відеокарти">
-          </div>
-          <div class="field">
-            <label for="tg_battery">🔋 Стан батареї (%)</label>
-            <input type="text" id="tg_battery" value="85">
-          </div>
-          <div class="field">
-            <label for="tg_condition">🌟 Стан</label>
-            <select id="tg_condition"><option selected>8/10</option><option>9/10</option><option>Як новий</option></select>
-          </div>
-          <div class="field full" style="flex-direction:row;align-items:center;gap:10px;">
-            <input type="checkbox" id="tg_defect" style="width:auto;padding:0;">
-            <label for="tg_defect" style="margin:0;">Дефект</label>
-          </div>
-          <div class="field full" id="tg_defect_text_wrap" style="display:none;">
-            <label for="tg_defect_text">Текст дефекту</label>
-            <input id="tg_defect_text" placeholder="Тут дефект">
-          </div>
-          <div class="field">
-            <label for="tg_price">💸 Ціна</label>
-            <input type="text" id="tg_price" value="12500">
-          </div>
-        </div>
-        <div class="actions">
-          <button class="btn btn-primary" onclick="generateTelegram()">Згенерувати Telegram</button>
-        </div>
-      </div>
-
       <div class="card output-card">
-        <div class="output-top">
-          <h2>Результат Telegram</h2>
-          <div class="badge">⚡ Готовий текст</div>
-        </div>
         <div class="field" style="flex:1;">
           <label for="tg_result">Текст</label>
           <textarea id="tg_result" placeholder="Тут буде готовий текст"></textarea>
@@ -478,144 +428,26 @@ function toggleDefectField(prefix){
   wrap.style.display = checkbox.checked ? '' : 'none';
 }
 
-function syncSharedFields(changedId){
-  const pairs = {
-    olx_model: 'tg_model',
-    olx_cpu: 'tg_cpu',
-    olx_ram: 'tg_ram',
-    olx_ssd: 'tg_disk',
-    olx_gpu: 'tg_gpu',
-    olx_gpu_custom: 'tg_gpu_custom',
-    tg_gpu_custom: 'olx_gpu_custom',
-    olx_code: 'tg_number',
-    olx_battery: 'tg_battery',
-    olx_price: 'tg_price',
-    olx_state: 'tg_condition',
-    olx_defect: 'tg_defect',
-    olx_defect_text: 'tg_defect_text',
-    olx_model_custom: 'tg_model_custom',
-    tg_model_custom: 'olx_model_custom',
-    olx_cpu_custom: 'tg_cpu_custom',
-    tg_cpu_custom: 'olx_cpu_custom',
-    tg_model: 'olx_model',
-    tg_cpu: 'olx_cpu',
-    tg_ram: 'olx_ram',
-    tg_disk: 'olx_ssd',
-    tg_gpu: 'olx_gpu',
-    tg_number: 'olx_code',
-    tg_battery: 'olx_battery',
-    tg_price: 'olx_price',
-    tg_condition: 'olx_state',
-    tg_defect: 'olx_defect',
-    tg_defect_text: 'olx_defect_text'
-  };
-
-  const mapValues = {
-    olx_model: {
-      'HP EliteBook 850 G7': 'HP EliteBook 850 G7',
-      'HP Zbook G4': 'HP Zbook 15 G4',
-      'HP Zbook G5': 'HP Zbook 15 G5',
-      'HP Zbook G6': 'HP Zbook 15 G6'
-    },
-    tg_model: {
-      'HP EliteBook 850 G7': 'HP EliteBook 850 G7',
-      'HP Zbook 15 G4': 'HP Zbook G4',
-      'HP Zbook 15 G5': 'HP Zbook G5',
-      'HP Zbook 15 G6': 'HP Zbook G6'
-    },
-    olx_ram: {
-      '16 Гб DDR4': '16 ГБ',
-      '32 Гб DDR4': '32 ГБ'
-    },
-    tg_ram: {
-      '16 ГБ': '16 Гб DDR4',
-      '32 ГБ': '32 Гб DDR4'
-    },
-    olx_ssd: {
-      '256 SSD': '256 ГБ',
-      '512 SSD': '512 ГБ',
-      '1024 SSD': '1024 ГБ'
-    },
-    tg_disk: {
-      '256 ГБ': '256 SSD',
-      '512 ГБ': '512 SSD',
-      '1024 ГБ': '1024 SSD'
-    },
-    olx_state: { '9/10':'9/10', '8/10':'8/10', 'Як новий':'Як новий' },
-    tg_condition: { '9/10':'9/10', '8/10':'8/10', 'Як новий':'Як новий' }
-  };
-
-  const targetId = pairs[changedId];
-  if(!targetId) return;
-
-  const source = document.getElementById(changedId);
-  const target = document.getElementById(targetId);
-  if(!source || !target) return;
-
-  if(source.type === 'checkbox'){
-    target.checked = source.checked;
-  }else{
-    let value = source.value;
-    if(mapValues[changedId]) value = mapValues[changedId][value] || value;
-    target.value = value;
-  }
-
-  if(changedId.includes('_defect')){
-    toggleDefectField(targetId.startsWith('olx_') ? 'olx' : 'tg');
-  }
-
-  if(changedId.startsWith('olx_')){
-    generateTelegram();
-  }
-  if(changedId.startsWith('tg_')){
-    generateOlx();
-  }
-}
-
-function bindSharedSync(){
-  ['olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_defect','olx_defect_text','tg_model','tg_model_custom','tg_cpu','tg_cpu_custom','tg_ram','tg_disk','tg_gpu','tg_gpu_custom','tg_number','tg_battery','tg_price','tg_condition','tg_defect','tg_defect_text']
-    .forEach(id => {
-      const el = document.getElementById(id);
-      if(el){
-        el.addEventListener('input', () => syncSharedFields(id));
-        el.addEventListener('change', () => syncSharedFields(id));
-      }
-    });
-
-  ['olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_defect','olx_defect_text'].forEach(syncSharedFields);
-
+function bindGeneratorEvents(){
   document.getElementById('olx_model').addEventListener('change', () => toggleCustomField('olx','model'));
-  document.getElementById('tg_model').addEventListener('change', () => toggleCustomField('tg','model'));
   document.getElementById('olx_cpu').addEventListener('change', () => toggleCustomField('olx','cpu'));
-  document.getElementById('tg_cpu').addEventListener('change', () => toggleCustomField('tg','cpu'));
   document.getElementById('olx_gpu').addEventListener('change', () => toggleCustomField('olx','gpu'));
-  document.getElementById('tg_gpu').addEventListener('change', () => toggleCustomField('tg','gpu'));
   document.getElementById('olx_defect').addEventListener('change', () => toggleDefectField('olx'));
-  document.getElementById('tg_defect').addEventListener('change', () => toggleDefectField('tg'));
   toggleCustomField('olx','model');
-  toggleCustomField('tg','model');
   toggleCustomField('olx','cpu');
-  toggleCustomField('tg','cpu');
   toggleCustomField('olx','gpu');
-  toggleCustomField('tg','gpu');
   toggleDefectField('olx');
-  toggleDefectField('tg');
 
-  ['olx_type','olx_model','olx_model_custom','olx_cpu','olx_cpu_custom','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_backlight','olx_defect','olx_defect_text']
+  ['olx_type','olx_model','olx_model_custom','olx_model_details','olx_cpu','olx_cpu_custom','olx_cpu_details','olx_ram','olx_ssd','olx_gpu','olx_gpu_custom','olx_code','olx_battery','olx_price','olx_state','olx_backlight','olx_defect','olx_defect_text']
     .forEach(id => {
       const el = document.getElementById(id);
       if(el){
-        el.addEventListener('input', generateOlx);
-        el.addEventListener('change', generateOlx);
-      }
-    });
-
-  ['tg_model','tg_model_custom','tg_number','tg_cpu','tg_cpu_custom','tg_ram','tg_disk','tg_gpu','tg_gpu_custom','tg_battery','tg_condition','tg_defect','tg_defect_text','tg_price']
-    .forEach(id => {
-      const el = document.getElementById(id);
-      if(el){
-        el.addEventListener('input', generateTelegram);
-        el.addEventListener('change', generateTelegram);
+        const regenerate = () => {
+          generateOlx();
+          generateTelegram();
+        };
+        el.addEventListener('input', regenerate);
+        el.addEventListener('change', regenerate);
       }
     });
 }
@@ -632,6 +464,11 @@ function switchGenerator(viewId){
   document.getElementById(viewId).classList.add('active');
   document.querySelectorAll('.switch-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelector(`.switch-btn[data-view="${viewId}"]`).classList.add('active');
+}
+function generateResults(){
+  generateOlx();
+  generateTelegram();
+  switchGenerator('resultsView');
 }
 document.querySelectorAll('.switch-btn').forEach(btn => btn.addEventListener('click', () => switchGenerator(btn.dataset.view)));
 
@@ -651,12 +488,14 @@ async function copyField(id, successText){
 function generateOlx(){
   const type = document.getElementById('olx_type').value;
   const modelSelect = document.getElementById('olx_model').value;
+  const modelDetails = document.getElementById('olx_model_details').value.trim();
   const model = modelSelect === 'Інше'
-    ? (document.getElementById('olx_model_custom').value.trim() || 'Інше')
+    ? [document.getElementById('olx_model_custom').value, modelDetails].filter(Boolean).join(' ')
     : modelSelect;
   const cpuSelect = document.getElementById('olx_cpu').value;
+  const cpuDetails = document.getElementById('olx_cpu_details').value.trim();
   const cpu = cpuSelect === 'Інше'
-    ? (document.getElementById('olx_cpu_custom').value.trim() || 'Інше')
+    ? document.getElementById('olx_cpu_custom').value + cpuDetails
     : cpuSelect;
   const ram = document.getElementById('olx_ram').value;
   const ssd = document.getElementById('olx_ssd').value;
@@ -754,26 +593,35 @@ ${defectBlock}
   showToast('OLX опис згенеровано');
 }
 function generateTelegram(){
-  const modelSelect = document.getElementById('tg_model').value;
-  const model = modelSelect === 'Інше'
-    ? (document.getElementById('tg_model_custom').value.trim() || 'Інше')
+  const modelSelect = document.getElementById('olx_model').value;
+  const modelDetails = document.getElementById('olx_model_details').value.trim();
+  const rawModel = modelSelect === 'Інше'
+    ? [document.getElementById('olx_model_custom').value, modelDetails].filter(Boolean).join(' ')
     : modelSelect;
-  const number = document.getElementById('tg_number').value;
-  const cpuSelect = document.getElementById('tg_cpu').value;
+  const model = ({
+    'HP Zbook G4': 'HP Zbook 15 G4',
+    'HP Zbook G5': 'HP Zbook 15 G5',
+    'HP Zbook G6': 'HP Zbook 15 G6'
+  })[rawModel] || rawModel;
+  const number = document.getElementById('olx_code').value.trim();
+  const cpuSelect = document.getElementById('olx_cpu').value;
+  const cpuDetails = document.getElementById('olx_cpu_details').value.trim();
   const cpu = cpuSelect === 'Інше'
-    ? (document.getElementById('tg_cpu_custom').value.trim() || 'Інше')
+    ? document.getElementById('olx_cpu_custom').value + cpuDetails
     : cpuSelect;
-  const ram = document.getElementById('tg_ram').value;
-  const disk = document.getElementById('tg_disk').value;
-  const gpuSelectTg = document.getElementById('tg_gpu').value;
-  const gpu = gpuSelectTg === 'Інше'
-    ? (document.getElementById('tg_gpu_custom').value.trim() || 'Інше')
-    : gpuSelectTg;
-  const battery = document.getElementById('tg_battery').value;
-  const condition = document.getElementById('tg_condition').value;
-  const defect = document.getElementById('tg_defect').checked;
-  const defectText = document.getElementById('tg_defect_text').value.trim();
-  const price = document.getElementById('tg_price').value;
+  const ramValue = document.getElementById('olx_ram').value;
+  const ram = ({'16 Гб DDR4':'16 ГБ', '32 Гб DDR4':'32 ГБ'})[ramValue] || ramValue;
+  const diskValue = document.getElementById('olx_ssd').value;
+  const disk = ({'256 SSD':'256 ГБ', '512 SSD':'512 ГБ', '1024 SSD':'1024 ГБ'})[diskValue] || diskValue;
+  const gpuSelect = document.getElementById('olx_gpu').value;
+  const gpu = gpuSelect === 'Інше'
+    ? (document.getElementById('olx_gpu_custom').value.trim() || 'Інше')
+    : gpuSelect;
+  const battery = document.getElementById('olx_battery').value.trim();
+  const condition = document.getElementById('olx_state').value;
+  const defect = document.getElementById('olx_defect').checked;
+  const defectText = document.getElementById('olx_defect_text').value.trim();
+  const price = document.getElementById('olx_price').value.trim();
   const defectLine = defect ? `⚠️ "${defectText}"\n` : "";
 
   const text = `💻 ${model}\n` +
@@ -1067,7 +915,7 @@ function downloadWordChecklist(){
   document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(link.href);
   showToast('DOCX-документ завантажено');
 }
-bindSharedSync();
+bindGeneratorEvents();
 generateOlx();
 generateTelegram();
 renderChecklistEditor();
