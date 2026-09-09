@@ -1,6 +1,6 @@
 [
   {"label":"Номер ноутбука","type":"line"},
-  {"label":"Памʼять (RAM)","type":"options","options":["8GB","16GB","24GB","32GB"]},
+  {"label":"Памʼять (RAM)","type":"options","options":["8GB","16GB","32GB"]},
   {"label":"Памʼять (SSD)","type":"options","options":["256GB","512GB"]},
   {"label":"Екран","type":"options","options":["HD","FHD"]},
   {"label":"Процесор","type":"line"},
