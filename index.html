@@ -204,12 +204,11 @@ textarea{
 .word-preview .field-label{width:55%;padding:5px 3px 4px 0;vertical-align:top}
 .word-preview .field-entry{width:40%;padding:5px 5px 4px 2px;vertical-align:top}
 .word-preview .field-entry-line{border-bottom:1px solid #334155;height:42px}
-.word-preview .field-row td{border-bottom:1px solid #d7deea}
-.word-preview .field-row-last td{border-bottom:0}
+.word-preview .field-row > td{border-bottom:1px solid #334155}
 .word-preview .line-label-row td{border-bottom:0;padding-bottom:1px}
 .word-preview .line-write-row td{padding-top:0}
 .word-preview .writing-line{padding:0 5px 2px;vertical-align:top}
-.word-preview .writing-rule{height:23px;border-bottom:1px solid #334155}
+.word-preview .writing-rule{height:23px}
 .word-preview .options-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .word-preview .option-cell{width:50%;padding:0 2px 2px 0;white-space:nowrap;vertical-align:top}
 .word-preview .box{font-size:12px;vertical-align:-1px}
@@ -738,18 +737,20 @@ function updateWordPreview(){
 }
 function buildWordOptionsHtml(choices){
   const rows = [];
-  for(let index = 0; index < choices.length; index += 2){
-    const first = choices[index] || '';
-    const second = choices[index + 1] || '';
-    rows.push(`<tr><td class="option-cell"><span class="box">&#9744;</span>&nbsp;${escapeHtml(first)}</td><td class="option-cell">${second ? `<span class="box">&#9744;</span>&nbsp;${escapeHtml(second)}` : ''}</td></tr>`);
+  const columns = choices.length === 3 ? 3 : 2;
+  for(let index = 0; index < choices.length; index += columns){
+    const cells = Array.from({length:columns}, (_, column) => {
+      const choice = choices[index + column] || '';
+      return `<td class="option-cell" style="width:${100 / columns}%">${choice ? `<span class="box">&#9744;</span>&nbsp;${escapeHtml(choice)}` : ''}</td>`;
+    });
+    rows.push(`<tr>${cells.join('')}</tr>`);
   }
   return `<table class="options-table" role="presentation">${rows.join('')}</table>`;
 }
 function buildWordChecklistHtml(){
   const items = wordLabels();
   return `<table class="checklist-form" role="presentation"><colgroup><col class="col-number"><col class="col-label"><col class="col-entry"></colgroup><tr><td colspan="3" class="form-title">ЧЕК-ЛИСТ ПЕРЕВІРКИ НОУТБУКА</td></tr>${items.map((item, index) => {
-    const isLast = index === items.length - 1;
-    const rowClass = isLast ? 'field-row field-row-last' : 'field-row';
+    const rowClass = 'field-row';
     if(item.options.toLowerCase() === 'лінія') return `<tr class="line-label-row"><td class="field-number">${index + 1}.</td><td class="field-label" colspan="2">${escapeHtml(item.label)}</td></tr><tr class="${rowClass} line-write-row"><td colspan="3" class="writing-line"><div class="writing-rule">&nbsp;</div></td></tr>`;
     const choices = item.options.split(',').map(option => option.trim()).filter(Boolean);
     return `<tr class="${rowClass}"><td class="field-number">${index + 1}.</td><td class="field-label">${escapeHtml(item.label)}</td><td class="field-entry">${buildWordOptionsHtml(choices)}</td></tr>`;
@@ -801,8 +802,10 @@ function buildChecklistDocxTableXml(){
     }
 
     const choices = item.options.split(',').map(option => option.trim()).filter(Boolean);
-    const choicesText = choices.map(choice => `☐ ${choice}`).join('     ');
-    rows.push(`<w:tr><w:trPr><w:trHeight w:val="330" w:hRule="atLeast"/></w:trPr>${wordCellXml(wordParagraphXml(`${index + 1}.`, {bold:true, color:'63718A', size:17}), numberWidth)}${wordCellXml(wordParagraphXml(item.label, {size:17}), labelWidth)}${wordCellXml(wordParagraphXml(choicesText, {size:17}), entryWidth)}</w:tr>`);
+    const choicesText = choices.length === 3
+      ? choices.map(choice => `☐\u00a0${choice}`).join('\u00a0\u00a0')
+      : choices.map(choice => `☐ ${choice}`).join('     ');
+    rows.push(`<w:tr><w:trPr><w:trHeight w:val="330" w:hRule="atLeast"/></w:trPr>${wordCellXml(wordParagraphXml(`${index + 1}.`, {bold:true, color:'63718A', size:17}), numberWidth, {bottomBorder:true})}${wordCellXml(wordParagraphXml(item.label, {size:17}), labelWidth, {bottomBorder:true})}${wordCellXml(wordParagraphXml(choicesText, {size:17}), entryWidth, {bottomBorder:true})}</w:tr>`);
   });
 
   return `<w:tbl><w:tblPr><w:tblW w:w="${tableWidth}" w:type="dxa"/><w:tblLayout w:type="fixed"/>${wordTableBordersXml()}<w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${numberWidth}"/><w:gridCol w:w="${labelWidth}"/><w:gridCol w:w="${entryWidth}"/></w:tblGrid>${rows.join('')}</w:tbl>`;
