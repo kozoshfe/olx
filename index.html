@@ -747,11 +747,12 @@ function buildWordOptionsHtml(choices){
 }
 function buildWordChecklistHtml(){
   const items = wordLabels();
-  return `<table class="checklist-form" role="presentation"><colgroup><col class="col-number"><col class="col-label"><col class="col-entry"></colgroup><tr><td colspan="3" class="form-title">ЧЕК-ЛИСТ ПЕРЕВІРКИ НОУТБУКА</td></tr>${items.map((item, index) => {
+  const layout = checklistPrintLayout(items);
+  return `<table class="checklist-form" role="presentation" style="font-size:${layout.size * 2 / 3}px"><colgroup><col class="col-number"><col class="col-label"><col class="col-entry"></colgroup><tr><td colspan="3" class="form-title" style="height:${layout.titleHeight / 15}px;font-size:${layout.titleSize * 2 / 3}px">ЧЕК-ЛИСТ ПЕРЕВІРКИ НОУТБУКА</td></tr>${items.map((item, index) => {
     const rowClass = 'field-row';
-    if(item.options.toLowerCase() === 'лінія') return `<tr class="${rowClass} line-row"><td class="field-number">${index + 1}.</td><td class="field-label" colspan="2">${escapeHtml(item.label)}</td></tr>`;
+    if(item.options.toLowerCase() === 'лінія') return `<tr class="${rowClass} line-row" style="height:${layout.heights[index] / 15}px"><td class="field-number">${index + 1}.</td><td class="field-label" colspan="2">${escapeHtml(item.label)}</td></tr>`;
     const choices = item.options.split(',').map(option => option.trim()).filter(Boolean);
-    return `<tr class="${rowClass}"><td class="field-number">${index + 1}.</td><td class="field-label">${escapeHtml(item.label)}</td><td class="field-entry">${buildWordOptionsHtml(choices)}</td></tr>`;
+    return `<tr class="${rowClass}" style="height:${layout.heights[index] / 15}px"><td class="field-number">${index + 1}.</td><td class="field-label">${escapeHtml(item.label)}</td><td class="field-entry">${buildWordOptionsHtml(choices)}</td></tr>`;
   }).join('')}</table>`;
 }
 function escapeXml(value){
@@ -792,12 +793,20 @@ function checklistPrintLayout(items){
     return Math.max(isLine ? 570 : 360, Math.max(labelLines, optionLines) * 220 + 140);
   });
   const naturalHeight = 330 + heights.reduce((sum, height) => sum + height, 0);
-  const scale = Math.min(1, 6400 / naturalHeight);
+  // Leave room for cell borders, the space between forms and printer margins.
+  const heightBudget = 7200 - items.length * 20;
+  const scale = Math.min(1, heightBudget / naturalHeight);
+  const titleHeight = Math.floor(330 * scale);
+  const fittedHeights = heights.map(height => Math.floor(height * scale));
+  const remaining = heightBudget - titleHeight - fittedHeights.reduce((sum, height) => sum + height, 0);
+  const weights = items.map(item => item.options.toLowerCase() === 'лінія' ? 2 : 1);
+  const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+  const expandedHeights = fittedHeights.map((height, index) => height + Math.floor(remaining * weights[index] / totalWeight));
   return {
     size:Math.max(2, Math.floor(17 * scale)),
     titleSize:Math.max(2, Math.floor(16 * scale)),
-    titleHeight:Math.floor(330 * scale),
-    heights:heights.map(height => Math.floor(height * scale)),
+    titleHeight,
+    heights:expandedHeights,
     margin:{top:Math.floor(55 * scale), right:70, bottom:Math.floor(55 * scale), left:70}
   };
 }
