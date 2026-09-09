@@ -6,6 +6,7 @@ const root = __dirname;
 const checklistPath = path.join(root, 'checklist.json');
 const port = Number(process.env.PORT) || 4175;
 const contentTypes = {
+  '.png': 'image/png',
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json; charset=utf-8',
