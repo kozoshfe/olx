@@ -494,8 +494,10 @@ function generateOlx(){
   const cpu = cpuSelect === 'Інше'
     ? document.getElementById('olx_cpu_custom').value + cpuDetails
     : cpuSelect;
-  const ram = document.getElementById('olx_ram').value;
-  const ssd = document.getElementById('olx_ssd').value;
+  const ramValue = document.getElementById('olx_ram').value;
+  const ram = parseInt(ramValue, 10) >= 32 ? `<strong>${ramValue}</strong>` : ramValue;
+  const ssdValue = document.getElementById('olx_ssd').value;
+  const ssd = parseInt(ssdValue, 10) >= 512 ? `<strong>${ssdValue}</strong>` : ssdValue;
   const gpuSelect = document.getElementById('olx_gpu').value;
   const gpuRaw = gpuSelect === 'Інше'
     ? (document.getElementById('olx_gpu_custom').value.trim() || 'Інше')
@@ -509,7 +511,7 @@ function generateOlx(){
   const defectText = document.getElementById('olx_defect_text').value.trim();
 
   const titleExtra = type === "Потужний" ? "Ноутбук для монтажу" : "Ноутбук для роботи";
-  const title = `${type} ${model} | ${cpu} | ${ram} | ${ssd} | ${titleExtra}${code ? ` | ${code}` : ''}`;
+  const title = `${type} ${model} | ${cpu} | ${ramValue} | ${ssdValue} | ${titleExtra}${code ? ` | ${code}` : ''}`;
   document.getElementById('olx_titleField').value = title;
 
   let descriptionText = "";
@@ -607,9 +609,11 @@ function generateTelegram(){
     ? document.getElementById('olx_cpu_custom').value + cpuDetails
     : cpuSelect;
   const ramValue = document.getElementById('olx_ram').value;
-  const ram = ({'16 Гб DDR4':'16 ГБ', '32 Гб DDR4':'32 ГБ'})[ramValue] || ramValue;
+  const ramText = ({'16 Гб DDR4':'16 ГБ', '32 Гб DDR4':'32 ГБ'})[ramValue] || ramValue;
+  const ram = parseInt(ramValue, 10) >= 32 ? `**${ramText}**` : ramText;
   const diskValue = document.getElementById('olx_ssd').value;
-  const disk = ({'256 SSD':'256 ГБ', '512 SSD':'512 ГБ', '1024 SSD':'1024 ГБ'})[diskValue] || diskValue;
+  const diskText = ({'256 SSD':'256 ГБ', '512 SSD':'512 ГБ', '1024 SSD':'1024 ГБ'})[diskValue] || diskValue;
+  const disk = parseInt(diskValue, 10) >= 512 ? `**${diskText}**` : diskText;
   const gpuSelect = document.getElementById('olx_gpu').value;
   const gpu = gpuSelect === 'Інше'
     ? (document.getElementById('olx_gpu_custom').value.trim() || 'Інше')
