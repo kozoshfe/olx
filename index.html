@@ -197,12 +197,12 @@ textarea{
 .choice{display:flex;flex-wrap:nowrap;justify-content:flex-start;gap:7px 18px}
 .choice span{white-space:nowrap}
 .word-preview .checklist-form{width:100%;min-height:390px;border-collapse:collapse;table-layout:fixed;border:1px solid #aeb9c9;color:#151515;font-size:11px;line-height:1.15}
-.word-preview .col-number{width:9.6%}
-.word-preview .col-label{width:45.4%}
+.word-preview .col-number{width:12.885%}
+.word-preview .col-label{width:42.115%}
 .word-preview .col-entry{width:45%}
 .word-preview .form-title{padding:6px 7px 5px;background:#e8eef7;color:#314568;font-size:9px;font-weight:800;letter-spacing:.02em;border-bottom:1px solid #aeb9c9}
 .word-preview .field-number{white-space:nowrap;padding:5px 0 5px 3px;vertical-align:middle;color:#63718a;font-weight:800}
-.word-preview .field-label{padding:5px 3px 5px 3mm;vertical-align:middle}
+.word-preview .field-label{padding:5px 3px 5px 1.235mm;vertical-align:middle}
 .word-preview .field-entry{width:45%;padding:5px 5px 5px 2px;vertical-align:middle}
 .word-preview .field-entry-line{border-bottom:1px solid #334155;height:42px}
 .word-preview .field-row > td{border-bottom:1px solid #334155}
@@ -769,9 +769,9 @@ function buildWordChecklistHtml(){
   const layout = checklistPrintLayout(items);
   return `<table class="checklist-form" role="presentation" style="font-size:${layout.size * 2 / 3}px"><colgroup><col class="col-number"><col class="col-label"><col class="col-entry"></colgroup><tr><td colspan="3" class="form-title" style="height:${layout.titleHeight / 15}px;font-size:${layout.titleSize * 2 / 3}px">ЧЕК-ЛИСТ ПЕРЕВІРКИ НОУТБУКА</td></tr>${items.map((item, index) => {
     const rowClass = 'field-row';
-    if(item.options.toLowerCase() === 'лінія') return `<tr class="${rowClass} line-row" style="height:${layout.heights[index] / 15}px"><td class="field-number">${index + 1}.</td><td class="field-label" colspan="2">${escapeHtml(item.label)}</td></tr>`;
+    if(item.options.toLowerCase() === 'лінія') return `<tr class="${rowClass} line-row" style="height:${layout.heights[index] / 15}px"><td class="field-number">${"&nbsp;".repeat(6)}${index + 1}.</td><td class="field-label" colspan="2">${escapeHtml(item.label)}</td></tr>`;
     const choices = item.options.split(',').map(option => option.trim()).filter(Boolean);
-    return `<tr class="${rowClass}" style="height:${layout.heights[index] / 15}px"><td class="field-number">${index + 1}.</td><td class="field-label">${escapeHtml(item.label)}</td><td class="field-entry">${buildWordOptionsHtml(choices)}</td></tr>`;
+    return `<tr class="${rowClass}" style="height:${layout.heights[index] / 15}px"><td class="field-number">${"&nbsp;".repeat(6)}${index + 1}.</td><td class="field-label">${escapeHtml(item.label)}</td><td class="field-entry">${buildWordOptionsHtml(choices)}</td></tr>`;
   }).join('')}</table>`;
 }
 function escapeXml(value){
@@ -785,6 +785,7 @@ function wordRunXml(text, options = {}){
 }
 function wordParagraphXml(text, options = {}){
   const align = options.align ? `<w:jc w:val="${options.align}"/>` : '';
+  const indent = options.rightIndent ? `<w:ind w:right="${options.rightIndent}"/>` : '';
   return `<w:p><w:pPr>${align}<w:spacing w:before="0" w:after="0" w:line="${Math.ceil((options.size || 18) * 12)}" w:lineRule="exact"/></w:pPr>${wordRunXml(text, options)}</w:p>`;
 }
 function wordCellXml(content, width, options = {}){
@@ -833,9 +834,11 @@ function buildChecklistDocxTableXml(){
   const items = wordLabels();
   const layout = checklistPrintLayout(items);
   const fieldOptions = {bottomBorder:true, verticalAlign:'center', margin:layout.margin};
-  const labelOptions = {...fieldOptions, margin:{...layout.margin, left:layout.margin.left + 170}}; // 3 mm in twips
-  const numberWidth = 500;
-  const labelWidth = 2360;
+  // Give indented numbers real cell space; keep labels at their original position.
+  const numberOptions = {...fieldOptions, margin:{...layout.margin, right:0}};
+  const labelOptions = fieldOptions;
+  const numberWidth = 670;
+  const labelWidth = 2190;
   const entryWidth = 2340;
   const tableWidth = numberWidth + labelWidth + entryWidth;
   const rows = [
@@ -844,7 +847,7 @@ function buildChecklistDocxTableXml(){
 
   items.forEach((item, index) => {
     if(item.options.toLowerCase() === 'лінія'){
-      rows.push(`<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${layout.heights[index]}" w:hRule="exact"/></w:trPr>${wordCellXml(wordParagraphXml(`${index + 1}.`, {bold:true, color:'63718A', size:layout.size}), numberWidth, fieldOptions)}${wordCellXml(wordParagraphXml(item.label, {size:layout.size}), labelWidth + entryWidth, {...labelOptions, gridSpan:2})}</w:tr>`);
+      rows.push(`<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${layout.heights[index]}" w:hRule="exact"/></w:trPr>${wordCellXml(wordParagraphXml(`${' '.repeat(6)}${index + 1}.`, {bold:true, color:'63718A', size:layout.size}), numberWidth, numberOptions)}${wordCellXml(wordParagraphXml(item.label, {size:layout.size}), labelWidth + entryWidth, {...labelOptions, gridSpan:2})}</w:tr>`);
       return;
     }
 
@@ -858,7 +861,7 @@ function buildChecklistDocxTableXml(){
       const runs = choices.slice(choiceIndex, choiceIndex + columns).map(choice => wordRunXml(`☐\u00a0${choice}`, {size})).join('<w:r><w:tab/></w:r>');
       optionParagraphs.push(`<w:p><w:pPr><w:tabs>${tabs}</w:tabs><w:spacing w:before="0" w:after="0" w:line="${Math.ceil(size * 12)}" w:lineRule="exact"/></w:pPr>${runs}</w:p>`);
     }
-    rows.push(`<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${layout.heights[index]}" w:hRule="exact"/></w:trPr>${wordCellXml(wordParagraphXml(`${index + 1}.`, {bold:true, color:'63718A', size:layout.size}), numberWidth, fieldOptions)}${wordCellXml(wordParagraphXml(item.label, {size:layout.size}), labelWidth, labelOptions)}${wordCellXml(optionParagraphs.join(''), entryWidth, fieldOptions)}</w:tr>`);
+    rows.push(`<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${layout.heights[index]}" w:hRule="exact"/></w:trPr>${wordCellXml(wordParagraphXml(`${' '.repeat(6)}${index + 1}.`, {bold:true, color:'63718A', size:layout.size}), numberWidth, numberOptions)}${wordCellXml(wordParagraphXml(item.label, {size:layout.size}), labelWidth, labelOptions)}${wordCellXml(optionParagraphs.join(''), entryWidth, fieldOptions)}</w:tr>`);
   });
 
   return `<w:tbl><w:tblPr><w:tblW w:w="${tableWidth}" w:type="dxa"/><w:tblLayout w:type="fixed"/>${wordTableBordersXml()}<w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${numberWidth}"/><w:gridCol w:w="${labelWidth}"/><w:gridCol w:w="${entryWidth}"/></w:tblGrid>${rows.join('')}</w:tbl>`;
